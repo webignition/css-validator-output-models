@@ -2,7 +2,7 @@
 
 namespace webignition\CssValidatorOutput\Model;
 
-class IssueMessage extends AbstractMessage
+abstract class AbstractIssueMessage extends AbstractMessage
 {
     private $ref;
     private $lineNumber;
