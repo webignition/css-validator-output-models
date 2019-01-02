@@ -41,6 +41,10 @@ class ExceptionOutputTest extends \PHPUnit\Framework\TestCase
                 'type' => ExceptionOutput::TYPE_UNKNOWN_MIME_TYPE,
                 'code' => null,
             ],
+            'unknown host' => [
+                'type' => ExceptionOutput::TYPE_UNKNOWN_HOST,
+                'code' => null,
+            ],
             'unknown file' => [
                 'type' => ExceptionOutput::TYPE_UNKNOWN_FILE,
                 'code' => null,
