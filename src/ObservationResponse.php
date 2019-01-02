@@ -18,7 +18,7 @@ class ObservationResponse
         $this->messages = [];
     }
 
-    public function addMessage(IssueMessage $message)
+    public function addMessage(AbstractMessage $message)
     {
         $this->messages[] = $message;
 
