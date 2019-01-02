@@ -32,10 +32,7 @@ class ObservationResponseTest extends \PHPUnit\Framework\TestCase
         int $expectedWarningCount,
         int $expectedInfoCount
     ) {
-        $ref = 'http://example.com/';
-        $dateTime = new \DateTime();
-
-        $observationResponse = new ObservationResponse($ref, $dateTime);
+        $observationResponse = new ObservationResponse('http://example.com', new \DateTime());
 
         foreach ($messages as $message) {
             $observationResponse->addMessage($message);
@@ -92,6 +89,63 @@ class ObservationResponseTest extends \PHPUnit\Framework\TestCase
                 'expectedErrorCount' => 3,
                 'expectedWarningCount' => 2,
                 'expectedInfoCount' => 1,
+            ],
+        ];
+    }
+
+    /**
+     * @dataProvider getErrorsByRefDataProvider
+     */
+    public function testGetErrorsByRef(array $messages, string $ref, array $expectedErrors)
+    {
+        $observationResponse = new ObservationResponse('http://example.com', new \DateTime());
+
+        foreach ($messages as $message) {
+            $observationResponse->addMessage($message);
+        }
+
+        $errorsByRef = $observationResponse->getErrorsByRef($ref);
+
+        $this->assertEquals($expectedErrors, $errorsByRef);
+    }
+
+    public function getErrorsByRefDataProvider()
+    {
+        return [
+            'no messages' => [
+                'messages' => [],
+                'ref' => 'http://example.com/foo.css',
+                'expectedErrors' => [],
+            ],
+            'no errors' => [
+                'messages' => [
+                    new WarningMessage('title', 0, '', 'http://example.com/foo.css', 0),
+                    new InfoMessage('title', 'description'),
+                ],
+                'ref' => 'http://example.com/foo.css',
+                'expectedErrors' => [],
+            ],
+            'no matching errors' => [
+                'messages' => [
+                    new ErrorMessage('title', 0, '', 'http://example.com/bar.css'),
+                    new WarningMessage('title', 0, '', 'http://example.com/foo.css', 0),
+                    new InfoMessage('title', 'description'),
+                ],
+                'ref' => 'http://example.com/foo.css',
+                'expectedErrors' => [],
+            ],
+            'matching errors' => [
+                'messages' => [
+                    new ErrorMessage('title', 1, 'foo', 'http://example.com/foo.css'),
+                    new WarningMessage('title', 0, '', 'http://example.com/foo.css', 0),
+                    new InfoMessage('title', 'description'),
+                    new ErrorMessage('title', 2, 'bar', 'http://example.com/foo.css'),
+                ],
+                'ref' => 'http://example.com/foo.css',
+                'expectedErrors' => [
+                    new ErrorMessage('title', 1, 'foo', 'http://example.com/foo.css'),
+                    new ErrorMessage('title', 2, 'bar', 'http://example.com/foo.css'),
+                ],
             ],
         ];
     }
