@@ -10,7 +10,7 @@ class ExceptionOutputTest extends \PHPUnit\Framework\TestCase
     /**
      * @dataProvider createDataProvider
      */
-    public function testCreate(string $type, int $code)
+    public function testCreate(string $type, ?int $code)
     {
         $output = new ExceptionOutput($type, $code);
 
@@ -32,6 +32,22 @@ class ExceptionOutputTest extends \PHPUnit\Framework\TestCase
             'curl 28' => [
                 'type' => ExceptionOutput::TYPE_CURL,
                 'code' => 28,
+            ],
+            'ssl error' => [
+                'type' => ExceptionOutput::TYPE_SSL_ERROR,
+                'code' => null,
+            ],
+            'unknown mime type' => [
+                'type' => ExceptionOutput::TYPE_UNKNOWN_MIME_TYPE,
+                'code' => null,
+            ],
+            'unknown file' => [
+                'type' => ExceptionOutput::TYPE_UNKNOWN_FILE,
+                'code' => null,
+            ],
+            'unknown' => [
+                'type' => ExceptionOutput::TYPE_UNKNOWN,
+                'code' => null,
             ],
         ];
     }
