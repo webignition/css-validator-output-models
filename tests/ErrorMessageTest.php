@@ -3,6 +3,8 @@
 
 namespace webignition\CssValidatorOutput\Model\Tests;
 
+use webignition\CssValidatorOutput\Model\AbstractIssueMessage;
+use webignition\CssValidatorOutput\Model\AbstractMessage;
 use webignition\CssValidatorOutput\Model\ErrorMessage;
 
 class ErrorMessageTest extends \PHPUnit\Framework\TestCase
@@ -16,16 +18,16 @@ class ErrorMessageTest extends \PHPUnit\Framework\TestCase
         string $context,
         string $ref
     ) {
-        $issueMessage = new ErrorMessage($title, $lineNumber, $context, $ref);
+        $error = new ErrorMessage($title, $lineNumber, $context, $ref);
 
-        $this->assertEquals(ErrorMessage::TYPE_ERROR, $issueMessage->getType());
-        $this->assertEquals($title, $issueMessage->getTitle());
-        $this->assertEquals($lineNumber, $issueMessage->getLineNumber());
-        $this->assertEquals($context, $issueMessage->getContext());
-        $this->assertEquals($ref, $issueMessage->getRef());
-        $this->assertTrue($issueMessage->isError());
-        $this->assertFalse($issueMessage->isWarning());
-        $this->assertFalse($issueMessage->isInfo());
+        $this->assertEquals(ErrorMessage::TYPE_ERROR, $error->getType());
+        $this->assertEquals($title, $error->getTitle());
+        $this->assertEquals($lineNumber, $error->getLineNumber());
+        $this->assertEquals($context, $error->getContext());
+        $this->assertEquals($ref, $error->getRef());
+        $this->assertTrue($error->isError());
+        $this->assertFalse($error->isWarning());
+        $this->assertFalse($error->isInfo());
     }
 
     public function createDataProvider(): array
@@ -48,5 +50,26 @@ class ErrorMessageTest extends \PHPUnit\Framework\TestCase
                 'expectedIsWarning' => false,
             ],
         ];
+    }
+
+    public function testJsonSerialize()
+    {
+        $title = 'title';
+        $lineNumber = 1;
+        $context = '.foo';
+        $ref = 'http://example.com';
+
+        $error = new ErrorMessage($title, $lineNumber, $context, $ref);
+
+        $this->assertEquals(
+            [
+                AbstractIssueMessage::KEY_TYPE => AbstractMessage::TYPE_ERROR,
+                AbstractIssueMessage::KEY_TITLE => $title,
+                AbstractIssueMessage::KEY_CONTEXT => $context,
+                AbstractIssueMessage::KEY_LINE_NUMBER => $lineNumber,
+                AbstractIssueMessage::KEY_REF => $ref,
+            ],
+            $error->jsonSerialize()
+        );
     }
 }
