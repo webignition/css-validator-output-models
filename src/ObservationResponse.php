@@ -54,11 +54,36 @@ class ObservationResponse
         return $this->messages;
     }
 
+    /**
+     * @return ErrorMessage[]
+     */
     public function getErrors(): array
     {
         return $this->getMessagesOfType(AbstractMessage::TYPE_ERROR);
     }
 
+    /**
+     * @param string $ref
+     *
+     * @return ErrorMessage[]
+     */
+    public function getErrorsByRef(string $ref): array
+    {
+        $errors = $this->getErrors();
+        $errorsByRef = [];
+
+        foreach ($errors as $error) {
+            if ($ref === $error->getRef()) {
+                $errorsByRef[] = $error;
+            }
+        }
+
+        return $errorsByRef;
+    }
+
+    /**
+     * @return WarningMessage[]
+     */
     public function getWarnings(): array
     {
         return $this->getMessagesOfType(AbstractMessage::TYPE_WARNING);
