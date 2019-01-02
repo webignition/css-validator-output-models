@@ -6,7 +6,12 @@ class ObservationResponse
 {
     private $ref;
     private $dateTime;
+
+    /**
+     * @var AbstractMessage[]
+     */
     private $messages;
+
     private $errorCount = 0;
     private $warningCount = 0;
     private $infoCount = 0;
@@ -31,6 +36,34 @@ class ObservationResponse
         }
     }
 
+    public function getRef(): string
+    {
+        return $this->ref;
+    }
+
+    public function getDateTime(): \DateTime
+    {
+        return $this->dateTime;
+    }
+
+    /**
+     * @return AbstractMessage[]
+     */
+    public function getMessages(): array
+    {
+        return $this->messages;
+    }
+
+    public function getErrors(): array
+    {
+        return $this->getMessagesOfType(AbstractMessage::TYPE_ERROR);
+    }
+
+    public function getWarnings(): array
+    {
+        return $this->getMessagesOfType(AbstractMessage::TYPE_WARNING);
+    }
+
     public function getErrorCount(): int
     {
         return $this->errorCount;
@@ -44,5 +77,18 @@ class ObservationResponse
     public function getInfoCount(): int
     {
         return $this->infoCount;
+    }
+
+    public function getMessagesOfType(string $type): array
+    {
+        $messages = [];
+
+        foreach ($this->messages as $message) {
+            if ($type === $message->getType()) {
+                $messages[] = $message;
+            }
+        }
+
+        return $messages;
     }
 }
