@@ -3,6 +3,8 @@
 
 namespace webignition\CssValidatorOutput\Model\Tests;
 
+use webignition\CssValidatorOutput\Model\AbstractIssueMessage;
+use webignition\CssValidatorOutput\Model\AbstractMessage;
 use webignition\CssValidatorOutput\Model\WarningMessage;
 
 class WarningMessageTest extends \PHPUnit\Framework\TestCase
@@ -17,16 +19,16 @@ class WarningMessageTest extends \PHPUnit\Framework\TestCase
         string $ref,
         int $level
     ) {
-        $issueMessage = new WarningMessage($title, $lineNumber, $context, $ref, $level);
+        $warning = new WarningMessage($title, $lineNumber, $context, $ref, $level);
 
-        $this->assertEquals(WarningMessage::TYPE_WARNING, $issueMessage->getType());
-        $this->assertEquals($title, $issueMessage->getTitle());
-        $this->assertEquals($lineNumber, $issueMessage->getLineNumber());
-        $this->assertEquals($context, $issueMessage->getContext());
-        $this->assertEquals($ref, $issueMessage->getRef());
-        $this->assertFalse($issueMessage->isError());
-        $this->assertTrue($issueMessage->isWarning());
-        $this->assertFalse($issueMessage->isInfo());
+        $this->assertEquals(WarningMessage::TYPE_WARNING, $warning->getType());
+        $this->assertEquals($title, $warning->getTitle());
+        $this->assertEquals($lineNumber, $warning->getLineNumber());
+        $this->assertEquals($context, $warning->getContext());
+        $this->assertEquals($ref, $warning->getRef());
+        $this->assertFalse($warning->isError());
+        $this->assertTrue($warning->isWarning());
+        $this->assertFalse($warning->isInfo());
     }
 
     public function createDataProvider(): array
@@ -51,5 +53,28 @@ class WarningMessageTest extends \PHPUnit\Framework\TestCase
                 'expectedIsWarning' => false,
             ],
         ];
+    }
+
+    public function testJsonSerialize()
+    {
+        $title = 'title';
+        $lineNumber = 1;
+        $context = '.foo';
+        $ref = 'http://example.com';
+        $level = 0;
+
+        $warning = new WarningMessage($title, $lineNumber, $context, $ref, $level);
+
+        $this->assertEquals(
+            [
+                AbstractIssueMessage::KEY_TYPE => AbstractMessage::TYPE_WARNING,
+                AbstractIssueMessage::KEY_TITLE => $title,
+                AbstractIssueMessage::KEY_CONTEXT => $context,
+                AbstractIssueMessage::KEY_LINE_NUMBER => $lineNumber,
+                AbstractIssueMessage::KEY_REF => $ref,
+                WarningMessage::KEY_LEVEL => $level,
+            ],
+            $warning->jsonSerialize()
+        );
     }
 }

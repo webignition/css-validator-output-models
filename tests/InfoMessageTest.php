@@ -21,4 +21,21 @@ class InfoMessageTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals($title, $infoMessage->getTitle());
         $this->assertEquals($description, $infoMessage->getDescription());
     }
+
+    public function testJsonSerialize()
+    {
+        $title = 'title';
+        $description = 'description';
+
+        $infoMessage = new InfoMessage($title, $description);
+
+        $this->assertEquals(
+            [
+                AbstractMessage::KEY_TYPE => AbstractMessage::TYPE_INFO,
+                AbstractMessage::KEY_TITLE => $title,
+                InfoMessage::KEY_DESCRIPTION => $description,
+            ],
+            $infoMessage->jsonSerialize()
+        );
+    }
 }

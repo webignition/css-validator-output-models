@@ -2,8 +2,12 @@
 
 namespace webignition\CssValidatorOutput\Model;
 
-abstract class AbstractIssueMessage extends AbstractMessage
+abstract class AbstractIssueMessage extends AbstractMessage implements \JsonSerializable
 {
+    const KEY_CONTEXT = 'context';
+    const KEY_REF = 'ref';
+    const KEY_LINE_NUMBER = 'line_number';
+
     private $ref;
     private $lineNumber;
     private $context;
@@ -30,5 +34,14 @@ abstract class AbstractIssueMessage extends AbstractMessage
     public function getRef(): string
     {
         return $this->ref;
+    }
+
+    public function jsonSerialize(): array
+    {
+        return array_merge(parent::jsonSerialize(), [
+            self::KEY_CONTEXT => $this->context,
+            self::KEY_REF => $this->ref,
+            self::KEY_LINE_NUMBER => $this->lineNumber,
+        ]);
     }
 }

@@ -2,8 +2,11 @@
 
 namespace webignition\CssValidatorOutput\Model;
 
-abstract class AbstractMessage
+abstract class AbstractMessage implements \JsonSerializable
 {
+    const KEY_TYPE = 'type';
+    const KEY_TITLE = 'title';
+
     const TYPE_ERROR = 'error';
     const TYPE_WARNING = 'warning';
     const TYPE_INFO = 'info';
@@ -40,5 +43,13 @@ abstract class AbstractMessage
     public function isInfo(): bool
     {
         return self::TYPE_INFO === $this->type;
+    }
+
+    public function jsonSerialize(): array
+    {
+        return [
+            self::KEY_TYPE => $this->type,
+            self::KEY_TITLE => $this->title,
+        ];
     }
 }
