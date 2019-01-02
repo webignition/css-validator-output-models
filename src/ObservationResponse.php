@@ -79,6 +79,11 @@ class ObservationResponse
         return $this->infoCount;
     }
 
+    public function getMessageCount(): int
+    {
+        return count($this->messages);
+    }
+
     public function getMessagesOfType(string $type): array
     {
         $messages = [];

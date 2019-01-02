@@ -44,6 +44,7 @@ class ObservationResponseTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals($expectedErrorCount, $observationResponse->getErrorCount());
         $this->assertEquals($expectedWarningCount, $observationResponse->getWarningCount());
         $this->assertEquals($expectedInfoCount, $observationResponse->getInfoCount());
+        $this->assertEquals(count($messages), $observationResponse->getMessageCount());
     }
 
     public function addMessageDataProvider(): array
