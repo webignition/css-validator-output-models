@@ -91,4 +91,46 @@ class WarningMessageTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals($originalTitle, $warning->getTitle());
         $this->assertNotSame($updatedWarning, $warning);
     }
+
+    public function testWithLineNumber()
+    {
+        $originalLineNumber = 1;
+        $updatedLineNumber = 2;
+
+        $warning = new WarningMessage('', $originalLineNumber, '', '', 0);
+        $this->assertEquals($originalLineNumber, $warning->getLineNumber());
+
+        $updatedWarning = $warning->withLineNumber($updatedLineNumber);
+        $this->assertEquals($updatedLineNumber, $updatedWarning->getLineNumber());
+        $this->assertEquals($originalLineNumber, $warning->getLineNumber());
+        $this->assertNotSame($updatedWarning, $warning);
+    }
+
+    public function testWithContext()
+    {
+        $originalContext = 'original context';
+        $updatedContext = 'updated context';
+
+        $warning = new WarningMessage('', 0, $originalContext, '', 0);
+        $this->assertEquals($originalContext, $warning->getContext());
+
+        $updatedWarning = $warning->withContext($updatedContext);
+        $this->assertEquals($updatedContext, $updatedWarning->getContext());
+        $this->assertEquals($originalContext, $warning->getContext());
+        $this->assertNotSame($updatedWarning, $warning);
+    }
+
+    public function testWithRef()
+    {
+        $originalRef = 'original ref';
+        $updatedRef = 'updated ref';
+
+        $warning = new WarningMessage('', 0, '', $originalRef, 0);
+        $this->assertEquals($originalRef, $warning->getRef());
+
+        $updatedWarning = $warning->withRef($updatedRef);
+        $this->assertEquals($updatedRef, $updatedWarning->getRef());
+        $this->assertEquals($originalRef, $warning->getRef());
+        $this->assertNotSame($updatedWarning, $warning);
+    }
 }

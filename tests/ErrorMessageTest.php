@@ -86,4 +86,46 @@ class ErrorMessageTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals($originalTitle, $error->getTitle());
         $this->assertNotSame($updatedError, $error);
     }
+
+    public function testWithLineNumber()
+    {
+        $originalLineNumber = 1;
+        $updatedLineNumber = 2;
+
+        $error = new ErrorMessage('', $originalLineNumber, '', '');
+        $this->assertEquals($originalLineNumber, $error->getLineNumber());
+
+        $updatedError = $error->withLineNumber($updatedLineNumber);
+        $this->assertEquals($updatedLineNumber, $updatedError->getLineNumber());
+        $this->assertEquals($originalLineNumber, $error->getLineNumber());
+        $this->assertNotSame($updatedError, $error);
+    }
+
+    public function testWithContext()
+    {
+        $originalContext = 'original context';
+        $updatedContext = 'updated context';
+
+        $error = new ErrorMessage('', 0, $originalContext, '');
+        $this->assertEquals($originalContext, $error->getContext());
+
+        $updatedError = $error->withContext($updatedContext);
+        $this->assertEquals($updatedContext, $updatedError->getContext());
+        $this->assertEquals($originalContext, $error->getContext());
+        $this->assertNotSame($updatedError, $error);
+    }
+
+    public function testWithRef()
+    {
+        $originalRef = 'original ref';
+        $updatedRef = 'updated ref';
+
+        $error = new ErrorMessage('', 0, '', $originalRef);
+        $this->assertEquals($originalRef, $error->getRef());
+
+        $updatedError = $error->withRef($updatedRef);
+        $this->assertEquals($updatedRef, $updatedError->getRef());
+        $this->assertEquals($originalRef, $error->getRef());
+        $this->assertNotSame($updatedError, $error);
+    }
 }
