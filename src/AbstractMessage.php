@@ -5,7 +5,7 @@ namespace webignition\CssValidatorOutput\Model;
 abstract class AbstractMessage implements \JsonSerializable
 {
     const KEY_TYPE = 'type';
-    const KEY_TITLE = 'title';
+    const KEY_TITLE = 'message';
 
     const TYPE_ERROR = 'error';
     const TYPE_WARNING = 'warning';
