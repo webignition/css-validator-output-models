@@ -7,7 +7,7 @@ class ExceptionOutput implements OutputInterface
     const TYPE_HTTP = 'http';
     const TYPE_CURL = 'curl';
     const TYPE_SSL_ERROR = 'ssl-error';
-    const TYPE_UNKNOWN_CONTENT_TYPE = 'unknown-content-type';
+    const TYPE_UNKNOWN_CONTENT_TYPE = 'invalid-content-type';
     const TYPE_UNKNOWN_HOST  = 'unknown-host';
     const TYPE_UNKNOWN_FILE = 'unknown-file';
     const TYPE_UNKNOWN = 'unknown';

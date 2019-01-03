@@ -44,7 +44,7 @@ class ExceptionOutputTest extends \PHPUnit\Framework\TestCase
             'unknown content type' => [
                 'type' => ExceptionOutput::TYPE_UNKNOWN_CONTENT_TYPE,
                 'subType' => 'application/pdf',
-                'expectedStringRepresentation' => 'unknown-content-type:application/pdf',
+                'expectedStringRepresentation' => 'invalid-content-type:application/pdf',
             ],
             'unknown host' => [
                 'type' => ExceptionOutput::TYPE_UNKNOWN_HOST,
