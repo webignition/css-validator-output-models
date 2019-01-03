@@ -7,18 +7,18 @@ class ExceptionOutput implements OutputInterface
     const TYPE_HTTP = 'http';
     const TYPE_CURL = 'curl';
     const TYPE_SSL_ERROR = 'ssl-error';
-    const TYPE_UNKNOWN_MIME_TYPE = 'unknown-mime-type';
+    const TYPE_UNKNOWN_CONTENT_TYPE = 'unknown-content-type';
     const TYPE_UNKNOWN_HOST  = 'unknown-host';
     const TYPE_UNKNOWN_FILE = 'unknown-file';
     const TYPE_UNKNOWN = 'unknown';
 
     private $type;
-    private $code;
+    private $subType;
 
-    public function __construct(string $type, int $code = null)
+    public function __construct(string $type, string $subType = '')
     {
         $this->type = $type;
-        $this->code = $code;
+        $this->subType = $subType;
     }
 
     public function getType(): string
@@ -26,9 +26,9 @@ class ExceptionOutput implements OutputInterface
         return $this->type;
     }
 
-    public function getCode(): ?int
+    public function getSubType(): string
     {
-        return $this->code;
+        return $this->subType;
     }
 
     public function isIncorrectUsageOutput(): bool
@@ -44,5 +44,16 @@ class ExceptionOutput implements OutputInterface
     public function isValidationOutput(): bool
     {
         return false;
+    }
+
+    public function __toString(): string
+    {
+        $string = $this->type;
+
+        if (!empty($this->subType)) {
+            $string .= ':' . $this->subType;
+        }
+
+        return $string;
     }
 }
