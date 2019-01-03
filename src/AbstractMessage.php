@@ -30,6 +30,14 @@ abstract class AbstractMessage implements \JsonSerializable
         return $this->title;
     }
 
+    public function withTitle(string $title): self
+    {
+        $new = clone $this;
+        $new->title = $title;
+
+        return $new;
+    }
+
     public function isError(): bool
     {
         return self::TYPE_ERROR === $this->type;

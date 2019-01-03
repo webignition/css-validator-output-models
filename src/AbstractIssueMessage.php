@@ -36,6 +36,30 @@ abstract class AbstractIssueMessage extends AbstractMessage implements \JsonSeri
         return $this->ref;
     }
 
+    public function withLineNumber(int $lineNumber): self
+    {
+        $new = clone $this;
+        $new->lineNumber = $lineNumber;
+
+        return $new;
+    }
+
+    public function withContext(string $context): self
+    {
+        $new = clone $this;
+        $new->context = $context;
+
+        return $new;
+    }
+
+    public function withRef(string $ref): self
+    {
+        $new = clone $this;
+        $new->ref = $ref;
+
+        return $new;
+    }
+
     public function jsonSerialize(): array
     {
         return array_merge(parent::jsonSerialize(), [

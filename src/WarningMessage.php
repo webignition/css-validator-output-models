@@ -20,6 +20,14 @@ class WarningMessage extends AbstractIssueMessage implements \JsonSerializable
         return $this->level;
     }
 
+    public function withLevel(int $level): self
+    {
+        $new = clone $this;
+        $new->level = $level;
+
+        return $new;
+    }
+
     public function jsonSerialize(): array
     {
         return array_merge(parent::jsonSerialize(), [
