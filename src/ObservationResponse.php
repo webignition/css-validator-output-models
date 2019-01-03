@@ -2,7 +2,7 @@
 
 namespace webignition\CssValidatorOutput\Model;
 
-class ObservationResponse
+class ObservationResponse implements MessageListViewerInterface
 {
     private $ref;
     private $dateTime;
@@ -109,7 +109,7 @@ class ObservationResponse
         return count($this->messages);
     }
 
-    public function getMessagesOfType(string $type): array
+    private function getMessagesOfType(string $type): array
     {
         $messages = [];
 
