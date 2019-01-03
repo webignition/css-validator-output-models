@@ -133,4 +133,18 @@ class WarningMessageTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals($originalRef, $warning->getRef());
         $this->assertNotSame($updatedWarning, $warning);
     }
+
+    public function testWithLevel()
+    {
+        $originalLevel = 1;
+        $updatedLevel = 2;
+
+        $warning = new WarningMessage('', 0, '', '', $originalLevel);
+        $this->assertEquals($originalLevel, $warning->getLevel());
+
+        $updatedWarning = $warning->withLevel($updatedLevel);
+        $this->assertEquals($updatedLevel, $updatedWarning->getLevel());
+        $this->assertEquals($originalLevel, $warning->getLevel());
+        $this->assertNotSame($updatedWarning, $warning);
+    }
 }
