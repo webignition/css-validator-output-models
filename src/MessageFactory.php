@@ -50,7 +50,7 @@ class MessageFactory
         return $warningMessage;
     }
 
-    private static function createIssueMessageFromArray(array $messageData): ?AbstractIssueMessage
+    public static function createIssueMessageFromArray(array $messageData): ?AbstractIssueMessage
     {
         $type = $messageData[self::ARRAY_KEY_TYPE];
         $title  = $messageData[self::ARRAY_KEY_TITLE];
