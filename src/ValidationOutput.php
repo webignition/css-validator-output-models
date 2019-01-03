@@ -37,4 +37,9 @@ class ValidationOutput implements OutputInterface
     {
         return true;
     }
+
+    public function getMessages(): MessageList
+    {
+        return $this->observationResponse->getMessages();
+    }
 }

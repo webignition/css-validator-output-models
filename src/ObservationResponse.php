@@ -6,34 +6,13 @@ class ObservationResponse
 {
     private $ref;
     private $dateTime;
-
-    /**
-     * @var AbstractMessage[]
-     */
     private $messages;
 
-    private $errorCount = 0;
-    private $warningCount = 0;
-    private $infoCount = 0;
-
-    public function __construct(string $ref, \DateTime $dateTime)
+    public function __construct(string $ref, \DateTime $dateTime, MessageList $messages)
     {
         $this->ref = $ref;
         $this->dateTime = $dateTime;
-        $this->messages = [];
-    }
-
-    public function addMessage(AbstractMessage $message)
-    {
-        $this->messages[] = $message;
-
-        if ($message->isError()) {
-            $this->errorCount++;
-        } elseif ($message->isWarning()) {
-            $this->warningCount++;
-        } elseif ($message->isInfo()) {
-            $this->infoCount++;
-        }
+        $this->messages = $messages;
     }
 
     public function getRef(): string
@@ -46,79 +25,8 @@ class ObservationResponse
         return $this->dateTime;
     }
 
-    /**
-     * @return AbstractMessage[]
-     */
-    public function getMessages(): array
+    public function getMessages(): MessageList
     {
         return $this->messages;
-    }
-
-    /**
-     * @return ErrorMessage[]
-     */
-    public function getErrors(): array
-    {
-        return $this->getMessagesOfType(AbstractMessage::TYPE_ERROR);
-    }
-
-    /**
-     * @param string $ref
-     *
-     * @return ErrorMessage[]
-     */
-    public function getErrorsByRef(string $ref): array
-    {
-        $errors = $this->getErrors();
-        $errorsByRef = [];
-
-        foreach ($errors as $error) {
-            if ($ref === $error->getRef()) {
-                $errorsByRef[] = $error;
-            }
-        }
-
-        return $errorsByRef;
-    }
-
-    /**
-     * @return WarningMessage[]
-     */
-    public function getWarnings(): array
-    {
-        return $this->getMessagesOfType(AbstractMessage::TYPE_WARNING);
-    }
-
-    public function getErrorCount(): int
-    {
-        return $this->errorCount;
-    }
-
-    public function getWarningCount(): int
-    {
-        return $this->warningCount;
-    }
-
-    public function getInfoCount(): int
-    {
-        return $this->infoCount;
-    }
-
-    public function getMessageCount(): int
-    {
-        return count($this->messages);
-    }
-
-    public function getMessagesOfType(string $type): array
-    {
-        $messages = [];
-
-        foreach ($this->messages as $message) {
-            if ($type === $message->getType()) {
-                $messages[] = $message;
-            }
-        }
-
-        return $messages;
     }
 }

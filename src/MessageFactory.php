@@ -62,12 +62,8 @@ class MessageFactory
             return new ErrorMessage($title, $lineNumber, $context, $ref);
         }
 
-        if (AbstractIssueMessage::TYPE_WARNING === $type) {
-            $level = 0;
+        $level = 0;
 
-            return new WarningMessage($title, $lineNumber, $context, $ref, $level);
-        }
-
-        return null;
+        return new WarningMessage($title, $lineNumber, $context, $ref, $level);
     }
 }
