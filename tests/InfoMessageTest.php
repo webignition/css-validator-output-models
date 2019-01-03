@@ -38,4 +38,18 @@ class InfoMessageTest extends \PHPUnit\Framework\TestCase
             $infoMessage->jsonSerialize()
         );
     }
+
+    public function testWithTitle()
+    {
+        $originalTitle = 'original title';
+        $updatedTitle = 'updatedTitle';
+
+        $infoMessage = new InfoMessage($originalTitle, '');
+        $this->assertEquals($originalTitle, $infoMessage->getTitle());
+
+        $updatedInfoMessage = $infoMessage->withTitle($updatedTitle);
+        $this->assertEquals($updatedTitle, $updatedInfoMessage->getTitle());
+        $this->assertEquals($originalTitle, $infoMessage->getTitle());
+        $this->assertNotSame($updatedInfoMessage, $infoMessage);
+    }
 }

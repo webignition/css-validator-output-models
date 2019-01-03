@@ -72,4 +72,18 @@ class ErrorMessageTest extends \PHPUnit\Framework\TestCase
             $error->jsonSerialize()
         );
     }
+
+    public function testWithTitle()
+    {
+        $originalTitle = 'original title';
+        $updatedTitle = 'updatedTitle';
+
+        $error = new ErrorMessage($originalTitle, 0, '', '');
+        $this->assertEquals($originalTitle, $error->getTitle());
+
+        $updatedError = $error->withTitle($updatedTitle);
+        $this->assertEquals($updatedTitle, $updatedError->getTitle());
+        $this->assertEquals($originalTitle, $error->getTitle());
+        $this->assertNotSame($updatedError, $error);
+    }
 }

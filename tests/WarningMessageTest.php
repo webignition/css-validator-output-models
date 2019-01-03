@@ -77,4 +77,18 @@ class WarningMessageTest extends \PHPUnit\Framework\TestCase
             $warning->jsonSerialize()
         );
     }
+
+    public function testWithTitle()
+    {
+        $originalTitle = 'original title';
+        $updatedTitle = 'updatedTitle';
+
+        $warning = new WarningMessage($originalTitle, 0, '', '', 0);
+        $this->assertEquals($originalTitle, $warning->getTitle());
+
+        $updatedWarning = $warning->withTitle($updatedTitle);
+        $this->assertEquals($updatedTitle, $updatedWarning->getTitle());
+        $this->assertEquals($originalTitle, $warning->getTitle());
+        $this->assertNotSame($updatedWarning, $warning);
+    }
 }
