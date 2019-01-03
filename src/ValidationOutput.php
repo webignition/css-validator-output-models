@@ -2,7 +2,7 @@
 
 namespace webignition\CssValidatorOutput\Model;
 
-class ValidationOutput implements OutputInterface, MessageListViewerInterface
+class ValidationOutput implements OutputInterface
 {
     private $options;
     private $observationResponse;
@@ -38,43 +38,8 @@ class ValidationOutput implements OutputInterface, MessageListViewerInterface
         return true;
     }
 
-    public function getMessages(): array
+    public function getMessages(): MessageList
     {
         return $this->observationResponse->getMessages();
-    }
-
-    public function getErrors(): array
-    {
-        return $this->observationResponse->getErrors();
-    }
-
-    public function getErrorsByRef(string $ref): array
-    {
-        return $this->observationResponse->getErrorsByRef($ref);
-    }
-
-    public function getWarnings(): array
-    {
-        return $this->observationResponse->getWarnings();
-    }
-
-    public function getErrorCount(): int
-    {
-        return $this->observationResponse->getErrorCount();
-    }
-
-    public function getWarningCount(): int
-    {
-        return $this->observationResponse->getWarningCount();
-    }
-
-    public function getInfoCount(): int
-    {
-        return $this->observationResponse->getInfoCount();
-    }
-
-    public function getMessageCount(): int
-    {
-        return $this->observationResponse->getMessageCount();
     }
 }
