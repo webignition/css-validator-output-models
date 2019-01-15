@@ -42,4 +42,12 @@ class ValidationOutput implements OutputInterface
     {
         return $this->observationResponse->getMessages();
     }
+
+    public function withObservationResponse(ObservationResponse $observationResponse): ValidationOutput
+    {
+        return new ValidationOutput(
+            clone $this->options,
+            $observationResponse
+        );
+    }
 }

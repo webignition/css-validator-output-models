@@ -36,4 +36,30 @@ class ValidationOutputTest extends \PHPUnit\Framework\TestCase
         $this->assertFalse($output->isIncorrectUsageOutput());
         $this->assertFalse($output->isExceptionOutput());
     }
+
+    public function testWithObservationResponse()
+    {
+        $options = new Options(
+            false,
+            'ucn',
+            'en',
+            2,
+            'all',
+            'css3'
+        );
+
+        $output = new ValidationOutput(
+            $options,
+            new ObservationResponse('original', new \DateTime(), new MessageList())
+        );
+
+        $updatedOutput = $output->withObservationResponse(
+            new ObservationResponse('updated', new \DateTime(), new MessageList())
+        );
+
+        $this->assertNotSame($output, $updatedOutput);
+        $this->assertNotSame($output->getOptions(), $updatedOutput->getOptions());
+        $this->assertEquals($output->getOptions(), $updatedOutput->getOptions());
+        $this->assertNotSame($output->getObservationResponse(), $updatedOutput->getObservationResponse());
+    }
 }
