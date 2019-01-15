@@ -22,6 +22,21 @@ class ObservationResponseTest extends \PHPUnit\Framework\TestCase
         $this->assertSame($messageList, $observationResponse->getMessages());
     }
 
+    public function testWithRef()
+    {
+        $originalRef = 'http://example.com/';
+        $updatedRef = 'http://foo.example.com/';
+
+        $originalObservationResponse = new ObservationResponse($originalRef, new \DateTime(), new MessageList());
+        $updatedObservationResponse = $originalObservationResponse->withRef($updatedRef);
+
+        $this->assertNotSame($originalObservationResponse, $updatedObservationResponse);
+        $this->assertEquals($originalRef, $originalObservationResponse->getRef());
+        $this->assertEquals($updatedRef, $updatedObservationResponse->getRef());
+        $this->assertNotSame($originalObservationResponse->getDateTime(), $updatedObservationResponse->getDateTime());
+        $this->assertNotSame($originalObservationResponse->getMessages(), $updatedObservationResponse->getMessages());
+    }
+
     public function testWithMessages()
     {
         $ref = 'http://example.com/';

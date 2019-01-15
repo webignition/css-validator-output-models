@@ -30,6 +30,15 @@ class ObservationResponse
         return $this->messages;
     }
 
+    public function withRef(string $ref)
+    {
+        return new ObservationResponse(
+            $ref,
+            clone $this->dateTime,
+            clone $this->messages
+        );
+    }
+
     public function withMessages(MessageList $messages)
     {
         return new ObservationResponse(
