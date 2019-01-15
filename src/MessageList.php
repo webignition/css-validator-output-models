@@ -75,6 +75,24 @@ class MessageList
         return count($this->messages);
     }
 
+    public function mutate(callable $mutator): MessageList
+    {
+        $messages = $this->messages;
+        $mutatedMessages = [];
+
+        foreach ($messages as $message) {
+            $mutatedMessages[] = $mutator($message);
+        }
+
+        $new = new MessageList();
+
+        foreach ($mutatedMessages as $message) {
+            $new->addMessage($message);
+        }
+
+        return $new;
+    }
+
     private function getMessagesOfType(string $type): array
     {
         $messages = [];
