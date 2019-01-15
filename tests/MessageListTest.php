@@ -136,4 +136,82 @@ class MessageListTest extends \PHPUnit\Framework\TestCase
             $this->messageList->getWarnings()
         );
     }
+
+    /**
+     * @dataProvider mutatedDataProvider
+     */
+    public function testMutate(array $messages, callable $mutator, array $expectedMessages)
+    {
+        $originalMessageList = new MessageList();
+
+        foreach ($messages as $message) {
+            $originalMessageList->addMessage($message);
+        }
+
+        $mutatedMessageList = $originalMessageList->mutate($mutator);
+        $this->assertNotSame($originalMessageList, $mutatedMessageList);
+
+        $mutatedMessages = $mutatedMessageList->getMessages();
+        /** @noinspection PhpParamsInspection */
+        $this->assertCount(count($expectedMessages), $mutatedMessages);
+
+        foreach ($mutatedMessages as $index => $mutatedMessage) {
+            $this->assertEquals($expectedMessages[$index], $mutatedMessage);
+        }
+    }
+
+    public function mutatedDataProvider(): array
+    {
+        return [
+            'no messages, non-modifying mutator' => [
+                'messages' => [],
+                'mutator' => function (AbstractMessage $message) {
+                    return $message;
+                },
+                'expectedMessages' => [],
+            ],
+            'has messages, non-modifying mutator' => [
+                'messages' => [
+                    new ErrorMessage('title', 0, 'context', 'ref'),
+                ],
+                'mutator' => function (AbstractMessage $message) {
+                    return $message;
+                },
+                'expectedMessages' => [
+                    new ErrorMessage('title', 0, 'context', 'ref'),
+                ],
+            ],
+            'has messages, non-matching modifying mutator' => [
+                'messages' => [
+                    new ErrorMessage('title', 0, 'context', 'ref'),
+                ],
+                'mutator' => function (AbstractMessage $message) {
+                    if ($message->isWarning()) {
+                        $message = $message->withTitle('updated title');
+                    }
+
+                    return $message;
+                },
+                'expectedMessages' => [
+                    new ErrorMessage('title', 0, 'context', 'ref'),
+                ],
+            ],
+            'has messages, matching modifying mutator' => [
+                'messages' => [
+                    new ErrorMessage('title', 0, 'context', 'original-ref'),
+                ],
+                'mutator' => function (AbstractMessage $message) {
+                    /* @var ErrorMessage $message */
+                    if ($message->isError()) {
+                        $message = $message->withRef('updated-ref');
+                    }
+
+                    return $message;
+                },
+                'expectedMessages' => [
+                    new ErrorMessage('title', 0, 'context', 'updated-ref'),
+                ],
+            ],
+        ];
+    }
 }
