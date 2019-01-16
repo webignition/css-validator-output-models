@@ -3,6 +3,7 @@
 
 namespace webignition\CssValidatorOutput\Model\Tests;
 
+use webignition\CssValidatorOutput\Model\AbstractIssueMessage;
 use webignition\CssValidatorOutput\Model\AbstractMessage;
 use webignition\CssValidatorOutput\Model\ErrorMessage;
 use webignition\CssValidatorOutput\Model\InfoMessage;
@@ -138,7 +139,7 @@ class MessageListTest extends \PHPUnit\Framework\TestCase
     }
 
     /**
-     * @dataProvider mutatedDataProvider
+     * @dataProvider mutateDataProvider
      */
     public function testMutate(array $messages, callable $mutator, array $expectedMessages)
     {
@@ -160,7 +161,7 @@ class MessageListTest extends \PHPUnit\Framework\TestCase
         }
     }
 
-    public function mutatedDataProvider(): array
+    public function mutateDataProvider(): array
     {
         return [
             'no messages, non-modifying mutator' => [
@@ -210,6 +211,84 @@ class MessageListTest extends \PHPUnit\Framework\TestCase
                 },
                 'expectedMessages' => [
                     new ErrorMessage('title', 0, 'context', 'updated-ref'),
+                ],
+            ],
+        ];
+    }
+
+    /**
+     * @dataProvider filterDataProvider
+     */
+    public function testFilter(array $messages, callable $matcher, array $expectedMessages)
+    {
+        $originalMessageList = new MessageList();
+
+        foreach ($messages as $message) {
+            $originalMessageList->addMessage($message);
+        }
+
+        $filteredMessageList = $originalMessageList->filter($matcher);
+        $this->assertNotSame($originalMessageList, $filteredMessageList);
+
+        $filteredMessages = $filteredMessageList->getMessages();
+        /** @noinspection PhpParamsInspection */
+        $this->assertCount(count($expectedMessages), $filteredMessages);
+
+        foreach ($filteredMessages as $index => $mutatedMessage) {
+            $this->assertEquals($expectedMessages[$index], $mutatedMessage);
+        }
+    }
+
+    public function filterDataProvider(): array
+    {
+        return [
+            'no messages, non-filtering filter' => [
+                'messages' => [],
+                'matcher' => function (AbstractMessage $message): bool {
+                    return true;
+                },
+                'expectedMessages' => [],
+            ],
+            'has messages, non-filtering filter' => [
+                'messages' => [
+                    new ErrorMessage('title', 0, 'context', 'ref'),
+                ],
+                'matcher' => function (AbstractMessage $message): bool {
+                    return true;
+                },
+                'expectedMessages' => [
+                    new ErrorMessage('title', 0, 'context', 'ref'),
+                ],
+            ],
+            'has messages, non-matching filtering filter' => [
+                'messages' => [
+                    new ErrorMessage('title', 0, 'context', 'non-matching-ref'),
+                ],
+                'matcher' => function (AbstractMessage $message): bool {
+                    if (!$message instanceof AbstractIssueMessage) {
+                        return true;
+                    }
+
+                    return 'matching-ref' !== $message->getRef();
+                },
+                'expectedMessages' => [
+                    new ErrorMessage('title', 0, 'context', 'non-matching-ref'),
+                ],
+            ],
+            'has messages, matching filtering filter' => [
+                'messages' => [
+                    new ErrorMessage('title', 0, 'context', 'matching-ref'),
+                    new ErrorMessage('title', 0, 'context', 'non-matching-ref'),
+                ],
+                'matcher' => function (AbstractMessage $message): bool {
+                    if (!$message instanceof AbstractIssueMessage) {
+                        return true;
+                    }
+
+                    return 'matching-ref' !== $message->getRef();
+                },
+                'expectedMessages' => [
+                    new ErrorMessage('title', 0, 'context', 'non-matching-ref'),
                 ],
             ],
         ];

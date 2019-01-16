@@ -93,6 +93,26 @@ class MessageList
         return $new;
     }
 
+    public function filter(callable $matcher): MessageList
+    {
+        $messages = $this->messages;
+        $filteredMessages = [];
+
+        foreach ($messages as $message) {
+            if ($matcher($message)) {
+                $filteredMessages[] = $message;
+            }
+        }
+
+        $new = new MessageList();
+
+        foreach ($filteredMessages as $message) {
+            $new->addMessage($message);
+        }
+
+        return $new;
+    }
+
     private function getMessagesOfType(string $type): array
     {
         $messages = [];
