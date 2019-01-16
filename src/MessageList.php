@@ -77,41 +77,35 @@ class MessageList
 
     public function mutate(callable $mutator): MessageList
     {
-        $new = new MessageList();
-
-        $this->map(
-            $new,
+        return $this->map(
             function (MessageList &$messageList, AbstractMessage $message) use ($mutator) {
                 $messageList->addMessage($mutator($message));
             }
         );
-
-        return $new;
     }
 
     public function filter(callable $matcher): MessageList
     {
-        $new = new MessageList();
-
-        $this->map(
-            $new,
+        return $this->map(
             function (MessageList &$messageList, AbstractMessage $message) use ($matcher) {
                 if ($matcher($message)) {
                     $messageList->addMessage($message);
                 }
             }
         );
-
-        return $new;
     }
 
-    private function map(MessageList $messageList, callable $callable)
+    private function map(callable $callable): MessageList
     {
+        $messageList = new MessageList();
+
         $messages = $this->messages;
 
         foreach ($messages as $message) {
             $callable($messageList, $message);
         }
+
+        return $messageList;
     }
 
     private function getMessagesOfType(string $type): array
