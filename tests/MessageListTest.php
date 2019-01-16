@@ -1,4 +1,5 @@
 <?php
+/** @noinspection PhpUnusedParameterInspection */
 /** @noinspection PhpDocSignatureInspection */
 
 namespace webignition\CssValidatorOutput\Model\Tests;
