@@ -98,7 +98,6 @@ class MessageList
     private function map(callable $callable): MessageList
     {
         $messageList = new MessageList();
-
         $messages = $this->messages;
 
         foreach ($messages as $message) {
