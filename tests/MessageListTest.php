@@ -112,7 +112,7 @@ class MessageListTest extends \PHPUnit\Framework\TestCase
                 new WarningMessage('warning2', 4, '.warning2', 'ref2', 0),
                 new ErrorMessage('error3', 5, '.error3', 'ref2'),
             ],
-            $this->messageList->getMessages()
+            array_values($this->messageList->getMessages())
         );
     }
 
@@ -142,18 +142,12 @@ class MessageListTest extends \PHPUnit\Framework\TestCase
     /**
      * @dataProvider mutateDataProvider
      */
-    public function testMutate(array $messages, callable $mutator, array $expectedMessages)
+    public function testMutate(MessageList $originalMessageList, callable $mutator, array $expectedMessages)
     {
-        $originalMessageList = new MessageList();
-
-        foreach ($messages as $message) {
-            $originalMessageList->addMessage($message);
-        }
-
         $mutatedMessageList = $originalMessageList->mutate($mutator);
         $this->assertNotSame($originalMessageList, $mutatedMessageList);
 
-        $mutatedMessages = $mutatedMessageList->getMessages();
+        $mutatedMessages = array_values($mutatedMessageList->getMessages());
         /** @noinspection PhpParamsInspection */
         $this->assertCount(count($expectedMessages), $mutatedMessages);
 
@@ -166,16 +160,16 @@ class MessageListTest extends \PHPUnit\Framework\TestCase
     {
         return [
             'no messages, non-modifying mutator' => [
-                'messages' => [],
+                'originalMessageList' => new MessageList(),
                 'mutator' => function (AbstractMessage $message) {
                     return $message;
                 },
                 'expectedMessages' => [],
             ],
             'has messages, non-modifying mutator' => [
-                'messages' => [
+                'originalMessageList' => new MessageList([
                     new ErrorMessage('title', 0, 'context', 'ref'),
-                ],
+                ]),
                 'mutator' => function (AbstractMessage $message) {
                     return $message;
                 },
@@ -184,9 +178,9 @@ class MessageListTest extends \PHPUnit\Framework\TestCase
                 ],
             ],
             'has messages, non-matching modifying mutator' => [
-                'messages' => [
+                'originalMessageList' => new MessageList([
                     new ErrorMessage('title', 0, 'context', 'ref'),
-                ],
+                ]),
                 'mutator' => function (AbstractMessage $message) {
                     if ($message->isWarning()) {
                         $message = $message->withTitle('updated title');
@@ -199,9 +193,9 @@ class MessageListTest extends \PHPUnit\Framework\TestCase
                 ],
             ],
             'has messages, matching modifying mutator' => [
-                'messages' => [
+                'originalMessageList' => new MessageList([
                     new ErrorMessage('title', 0, 'context', 'original-ref'),
-                ],
+                ]),
                 'mutator' => function (AbstractMessage $message) {
                     /* @var ErrorMessage $message */
                     if ($message->isError()) {
@@ -220,18 +214,12 @@ class MessageListTest extends \PHPUnit\Framework\TestCase
     /**
      * @dataProvider filterDataProvider
      */
-    public function testFilter(array $messages, callable $matcher, array $expectedMessages)
+    public function testFilter(MessageList $originalMessageList, callable $matcher, array $expectedMessages)
     {
-        $originalMessageList = new MessageList();
-
-        foreach ($messages as $message) {
-            $originalMessageList->addMessage($message);
-        }
-
         $filteredMessageList = $originalMessageList->filter($matcher);
         $this->assertNotSame($originalMessageList, $filteredMessageList);
 
-        $filteredMessages = $filteredMessageList->getMessages();
+        $filteredMessages = array_values($filteredMessageList->getMessages());
         /** @noinspection PhpParamsInspection */
         $this->assertCount(count($expectedMessages), $filteredMessages);
 
@@ -244,16 +232,16 @@ class MessageListTest extends \PHPUnit\Framework\TestCase
     {
         return [
             'no messages, non-filtering filter' => [
-                'messages' => [],
+                'originalMessageList' => new MessageList(),
                 'matcher' => function (AbstractMessage $message): bool {
                     return true;
                 },
                 'expectedMessages' => [],
             ],
             'has messages, non-filtering filter' => [
-                'messages' => [
+                'originalMessageList' => new MessageList([
                     new ErrorMessage('title', 0, 'context', 'ref'),
-                ],
+                ]),
                 'matcher' => function (AbstractMessage $message): bool {
                     return true;
                 },
@@ -262,9 +250,9 @@ class MessageListTest extends \PHPUnit\Framework\TestCase
                 ],
             ],
             'has messages, non-matching filtering filter' => [
-                'messages' => [
+                'originalMessageList' => new MessageList([
                     new ErrorMessage('title', 0, 'context', 'non-matching-ref'),
-                ],
+                ]),
                 'matcher' => function (AbstractMessage $message): bool {
                     if (!$message instanceof AbstractIssueMessage) {
                         return true;
@@ -277,10 +265,10 @@ class MessageListTest extends \PHPUnit\Framework\TestCase
                 ],
             ],
             'has messages, matching filtering filter' => [
-                'messages' => [
+                'originalMessageList' => new MessageList([
                     new ErrorMessage('title', 0, 'context', 'matching-ref'),
                     new ErrorMessage('title', 0, 'context', 'non-matching-ref'),
-                ],
+                ]),
                 'matcher' => function (AbstractMessage $message): bool {
                     if (!$message instanceof AbstractIssueMessage) {
                         return true;
@@ -291,6 +279,119 @@ class MessageListTest extends \PHPUnit\Framework\TestCase
                 'expectedMessages' => [
                     new ErrorMessage('title', 0, 'context', 'non-matching-ref'),
                 ],
+            ],
+        ];
+    }
+
+    /**
+     * @dataProvider createDataProvider
+     */
+    public function testCreate(array $messages, array $expectedMessages)
+    {
+        $messageList = new MessageList($messages);
+
+        $this->assertEquals(
+            $expectedMessages,
+            array_values($messageList->getMessages())
+        );
+    }
+
+    public function createDataProvider(): array
+    {
+        return [
+            'empty' => [
+                'messages' => [],
+                'expectedMessages' => [],
+            ],
+            'non-message values' => [
+                'messages' => [1, 'string', true],
+                'expectedMessages' => [],
+            ],
+            'message values' => [
+                'messages' => [
+                    new ErrorMessage('error1', 1, '.error1', 'ref1'),
+                    new WarningMessage('warning1', 2, '.warning1', 'ref1', 0),
+                    new InfoMessage('info1', 'description'),
+                ],
+                'expectedMessages' => [
+                    new ErrorMessage('error1', 1, '.error1', 'ref1'),
+                    new WarningMessage('warning1', 2, '.warning1', 'ref1', 0),
+                    new InfoMessage('info1', 'description'),
+                ],
+            ],
+            'message and non-message values' => [
+                'messages' => [
+                    1,
+                    new ErrorMessage('error1', 1, '.error1', 'ref1'),
+                    'string',
+                    new WarningMessage('warning1', 2, '.warning1', 'ref1', 0),
+                    false,
+                    new InfoMessage('info1', 'description'),
+                ],
+                'expectedMessages' => [
+                    new ErrorMessage('error1', 1, '.error1', 'ref1'),
+                    new WarningMessage('warning1', 2, '.warning1', 'ref1', 0),
+                    new InfoMessage('info1', 'description'),
+                ],
+            ],
+        ];
+    }
+
+    /**
+     * @dataProvider mergeDataProvider
+     */
+    public function testMerge(
+        MessageList $originalMessages,
+        MessageList $additionalMessages,
+        MessageList $expectedMessages
+    ) {
+        $mergedMessages = $originalMessages->merge($additionalMessages);
+
+        $this->assertNotSame($originalMessages, $mergedMessages);
+        $this->assertEquals(
+            array_values($expectedMessages->getMessages()),
+            array_values($mergedMessages->getMessages())
+        );
+    }
+
+    public function mergeDataProvider(): array
+    {
+        return [
+            'empty' => [
+                'originalMessages' => new MessageList(),
+                'additionalMessages' => new MessageList(),
+                'expectedMessages' => new MessageList(),
+            ],
+            'additional messages all contained in original messages' => [
+                'originalMessages' => new MessageList([
+                    new ErrorMessage('error1', 1, '.error1', 'ref1'),
+                    new WarningMessage('warning1', 2, '.warning1', 'ref1', 0),
+                    new InfoMessage('info1', 'description'),
+                ]),
+                'additionalMessages' => new MessageList([
+                    new ErrorMessage('error1', 1, '.error1', 'ref1'),
+                    new WarningMessage('warning1', 2, '.warning1', 'ref1', 0),
+                    new InfoMessage('info1', 'description'),
+                ]),
+                'expectedMessages' => new MessageList([
+                    new ErrorMessage('error1', 1, '.error1', 'ref1'),
+                    new WarningMessage('warning1', 2, '.warning1', 'ref1', 0),
+                    new InfoMessage('info1', 'description'),
+                ]),
+            ],
+            'new messages' => [
+                'originalMessages' => new MessageList([
+                    new ErrorMessage('error1', 1, '.error1', 'ref1'),
+                ]),
+                'additionalMessages' => new MessageList([
+                    new WarningMessage('warning1', 2, '.warning1', 'ref1', 0),
+                    new InfoMessage('info1', 'description'),
+                ]),
+                'expectedMessages' => new MessageList([
+                    new ErrorMessage('error1', 1, '.error1', 'ref1'),
+                    new WarningMessage('warning1', 2, '.warning1', 'ref1', 0),
+                    new InfoMessage('info1', 'description'),
+                ]),
             ],
         ];
     }
