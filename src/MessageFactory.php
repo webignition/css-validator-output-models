@@ -11,24 +11,20 @@ class MessageFactory
     const ARRAY_KEY_LINE_NUMBER = 'line_number';
 
     /**
-     * @param \DOMElement|null $messageElement
+     * @param \DOMElement $messageElement
      *
      * @return WarningMessage|ErrorMessage|AbstractMessage|null
      */
-    public static function createFromDOMElement(?\DOMElement $messageElement): ?AbstractMessage
+    public static function createFromDOMElement(\DOMElement $messageElement): ?AbstractMessage
     {
-        if (null === $messageElement) {
-            return null;
-        }
-
         $type = $messageElement->getAttribute('type');
 
         if (AbstractMessage::TYPE_ERROR !== $type && AbstractMessage::TYPE_WARNING !== $type) {
             return null;
         }
 
-        $contextNode = $messageElement->getElementsByTagName('context')->item(0);
-        if (!$contextNode instanceof \DOMElement) {
+        $contextElement = $messageElement->getElementsByTagName('context')->item(0);
+        if (!$contextElement instanceof \DOMElement) {
             return null;
         }
 
@@ -40,9 +36,9 @@ class MessageFactory
         return self::createIssueMessageFromArray([
             self::ARRAY_KEY_TYPE => $type,
             self::ARRAY_KEY_TITLE => trim($titleElement->nodeValue),
-            self::ARRAY_KEY_CONTEXT => $contextNode->nodeValue,
+            self::ARRAY_KEY_CONTEXT => $contextElement->nodeValue,
             self::ARRAY_KEY_REF => $messageElement->getAttribute('ref'),
-            self::ARRAY_KEY_LINE_NUMBER => (int) $contextNode->getAttribute('line'),
+            self::ARRAY_KEY_LINE_NUMBER => (int) $contextElement->getAttribute('line'),
         ]);
     }
 

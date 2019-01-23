@@ -1,0 +1,11 @@
+parameters:
+  ignoreErrors:
+#    -
+#      message: '#Cannot access property \$nodeValue on DOMNode#'
+#      path: '%currentWorkingDirectory%/src/MessageFactory.php'
+#    -
+#      message: '#Cannot call method getAttribute\(\) on DOMNode\|null#'
+#      path: '%currentWorkingDirectory%/src/MessageFactory.php'
+    -
+      message: '#createFromDOMElement\(\) expects DOMElement#'
+      path: '%currentWorkingDirectory%/tests/MessageFactoryTest.php'
