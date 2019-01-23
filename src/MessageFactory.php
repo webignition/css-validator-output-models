@@ -25,6 +25,10 @@ class MessageFactory
 
         $contextNode = $messageElement->getElementsByTagName('context')->item(0);
 
+        if (!$contextNode instanceof \DOMElement) {
+            return null;
+        }
+
         return self::createIssueMessageFromArray([
             self::ARRAY_KEY_TYPE => $type,
             self::ARRAY_KEY_TITLE => trim(
