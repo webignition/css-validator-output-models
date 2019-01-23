@@ -11,12 +11,16 @@ class MessageFactory
     const ARRAY_KEY_LINE_NUMBER = 'line_number';
 
     /**
-     * @param \DOMElement $messageElement
+     * @param \DOMElement|null $messageElement
      *
      * @return WarningMessage|ErrorMessage|AbstractMessage|null
      */
-    public static function createFromDOMElement(\DOMElement $messageElement): ?AbstractMessage
+    public static function createFromDOMElement(?\DOMElement $messageElement): ?AbstractMessage
     {
+        if (null === $messageElement) {
+            return null;
+        }
+
         $type = $messageElement->getAttribute('type');
 
         if (AbstractMessage::TYPE_ERROR !== $type && AbstractMessage::TYPE_WARNING !== $type) {
@@ -28,11 +32,14 @@ class MessageFactory
             return null;
         }
 
+        $titleElement = $messageElement->getElementsByTagName('title')->item(0);
+        if (!$titleElement instanceof \DOMElement) {
+            return null;
+        }
+
         return self::createIssueMessageFromArray([
             self::ARRAY_KEY_TYPE => $type,
-            self::ARRAY_KEY_TITLE => trim(
-                $messageElement->getElementsByTagName('title')->item(0)->nodeValue
-            ),
+            self::ARRAY_KEY_TITLE => trim($titleElement->nodeValue),
             self::ARRAY_KEY_CONTEXT => $contextNode->nodeValue,
             self::ARRAY_KEY_REF => $messageElement->getAttribute('ref'),
             self::ARRAY_KEY_LINE_NUMBER => (int) $contextNode->getAttribute('line'),
