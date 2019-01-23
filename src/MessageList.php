@@ -13,6 +13,15 @@ class MessageList
     private $warningCount = 0;
     private $infoCount = 0;
 
+    public function __construct(array $messages = [])
+    {
+        foreach ($messages as $message) {
+            if ($message instanceof AbstractMessage) {
+                $this->addMessage($message);
+            }
+        }
+    }
+
     public function addMessage(AbstractMessage $message)
     {
         $this->messages[$message->getHash()] = $message;
@@ -98,6 +107,26 @@ class MessageList
     public function contains(AbstractMessage $message): bool
     {
         return array_key_exists($message->getHash(), $this->messages);
+    }
+
+    public function merge(MessageList $messageList): MessageList
+    {
+        $messages = array_values($this->getMessages());
+        $additionalMessages = array_values($messageList->getMessages());
+
+        foreach ($additionalMessages as $additionalMessage) {
+            if (!$this->contains($additionalMessage)) {
+                $messages[] = $additionalMessage;
+            }
+        }
+
+        $newMessageList = new MessageList();
+
+        foreach ($messages as $message) {
+            $newMessageList->addMessage($message);
+        }
+
+        return $newMessageList;
     }
 
     private function map(callable $callable): MessageList

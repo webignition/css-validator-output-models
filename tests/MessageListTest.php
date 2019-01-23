@@ -294,4 +294,58 @@ class MessageListTest extends \PHPUnit\Framework\TestCase
             ],
         ];
     }
+
+    /**
+     * @dataProvider createDataProvider
+     */
+    public function testCreate(array $messages, array $expectedMessages)
+    {
+        $messageList = new MessageList($messages);
+
+        $this->assertEquals(
+            $expectedMessages,
+            array_values($messageList->getMessages())
+        );
+    }
+
+    public function createDataProvider(): array
+    {
+        return [
+            'empty' => [
+                'messages' => [],
+                'expectedMessages' => [],
+            ],
+            'non-message values' => [
+                'messages' => [1, 'string', true],
+                'expectedMessages' => [],
+            ],
+            'message values' => [
+                'messages' => [
+                    new ErrorMessage('error1', 1, '.error1', 'ref1'),
+                    new WarningMessage('warning1', 2, '.warning1', 'ref1', 0),
+                    new InfoMessage('info1', 'description'),
+                ],
+                'expectedMessages' => [
+                    new ErrorMessage('error1', 1, '.error1', 'ref1'),
+                    new WarningMessage('warning1', 2, '.warning1', 'ref1', 0),
+                    new InfoMessage('info1', 'description'),
+                ],
+            ],
+            'message and non-message values' => [
+                'messages' => [
+                    1,
+                    new ErrorMessage('error1', 1, '.error1', 'ref1'),
+                    'string',
+                    new WarningMessage('warning1', 2, '.warning1', 'ref1', 0),
+                    false,
+                    new InfoMessage('info1', 'description'),
+                ],
+                'expectedMessages' => [
+                    new ErrorMessage('error1', 1, '.error1', 'ref1'),
+                    new WarningMessage('warning1', 2, '.warning1', 'ref1', 0),
+                    new InfoMessage('info1', 'description'),
+                ],
+            ],
+        ];
+    }
 }
