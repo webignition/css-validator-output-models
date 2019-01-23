@@ -348,4 +348,63 @@ class MessageListTest extends \PHPUnit\Framework\TestCase
             ],
         ];
     }
+
+    /**
+     * @dataProvider mergeDataProvider
+     */
+    public function testMerge(
+        MessageList $originalMessages,
+        MessageList $additionalMessages,
+        MessageList $expectedMessages
+    ) {
+        $mergedMessages = $originalMessages->merge($additionalMessages);
+
+        $this->assertNotSame($originalMessages, $mergedMessages);
+        $this->assertEquals(
+            array_values($expectedMessages->getMessages()),
+            array_values($mergedMessages->getMessages())
+        );
+    }
+
+    public function mergeDataProvider(): array
+    {
+        return [
+            'empty' => [
+                'originalMessages' => new MessageList(),
+                'additionalMessages' => new MessageList(),
+                'expectedMessages' => new MessageList(),
+            ],
+            'additional messages all contained in original messages' => [
+                'originalMessages' => new MessageList([
+                    new ErrorMessage('error1', 1, '.error1', 'ref1'),
+                    new WarningMessage('warning1', 2, '.warning1', 'ref1', 0),
+                    new InfoMessage('info1', 'description'),
+                ]),
+                'additionalMessages' => new MessageList([
+                    new ErrorMessage('error1', 1, '.error1', 'ref1'),
+                    new WarningMessage('warning1', 2, '.warning1', 'ref1', 0),
+                    new InfoMessage('info1', 'description'),
+                ]),
+                'expectedMessages' => new MessageList([
+                    new ErrorMessage('error1', 1, '.error1', 'ref1'),
+                    new WarningMessage('warning1', 2, '.warning1', 'ref1', 0),
+                    new InfoMessage('info1', 'description'),
+                ]),
+            ],
+            'new messages' => [
+                'originalMessages' => new MessageList([
+                    new ErrorMessage('error1', 1, '.error1', 'ref1'),
+                ]),
+                'additionalMessages' => new MessageList([
+                    new WarningMessage('warning1', 2, '.warning1', 'ref1', 0),
+                    new InfoMessage('info1', 'description'),
+                ]),
+                'expectedMessages' => new MessageList([
+                    new ErrorMessage('error1', 1, '.error1', 'ref1'),
+                    new WarningMessage('warning1', 2, '.warning1', 'ref1', 0),
+                    new InfoMessage('info1', 'description'),
+                ]),
+            ],
+        ];
+    }
 }
