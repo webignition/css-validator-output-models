@@ -12,18 +12,19 @@ class MessageFactoryTest extends \PHPUnit\Framework\TestCase
 {
     public function testCreateErrorMessageFromDOMElement()
     {
-        /* @var ErrorMessage $error */
         $error = MessageFactory::createFromDOMElement($this->createMessageDomElement('error-message.xml'));
 
-        $this->assertInstanceOf(ErrorMessage::class, $error);
-        $this->assertEquals('Parse Error
+        if ($error instanceof ErrorMessage) {
+            $this->assertEquals(AbstractMessage::TYPE_ERROR, $error->getType());
+            $this->assertEquals('Parse Error
             *display: inline;', $error->getTitle());
-        $this->assertEquals('audio, canvas, video', $error->getContext());
-        $this->assertEquals(28, $error->getLineNumber());
-        $this->assertTrue($error->isError());
-        $this->assertEquals('http://example.com/css/bootstrap.css', $error->getRef());
-
-        $this->assertEquals(AbstractMessage::TYPE_ERROR, $error->getType());
+            $this->assertEquals('audio, canvas, video', $error->getContext());
+            $this->assertEquals(28, $error->getLineNumber());
+            $this->assertTrue($error->isError());
+            $this->assertEquals('http://example.com/css/bootstrap.css', $error->getRef());
+        } else {
+            $this->fail('$error is not an instance of ErrorMessage');
+        }
     }
 
     public function testCreateWarningMessageFromDOMElement()
@@ -31,18 +32,20 @@ class MessageFactoryTest extends \PHPUnit\Framework\TestCase
         /* @var WarningMessage $warning */
         $warning = MessageFactory::createFromDOMElement($this->createMessageDomElement('warning-message.xml'));
 
-        $this->assertInstanceOf(WarningMessage::class, $warning);
-        $this->assertEquals(
-            "You should add a 'type' attribute with a value of 'text/css' to the 'link' element",
-            $warning->getTitle()
-        );
-        $this->assertEquals('', $warning->getContext());
-        $this->assertEquals(5, $warning->getLineNumber());
-        $this->assertTrue($warning->isWarning());
-        $this->assertEquals(0, $warning->getLevel());
-        $this->assertEquals('http://example.com/', $warning->getRef());
-
-        $this->assertEquals(AbstractMessage::TYPE_WARNING, $warning->getType());
+        if ($warning instanceof WarningMessage) {
+            $this->assertEquals(AbstractMessage::TYPE_WARNING, $warning->getType());
+            $this->assertEquals(
+                "You should add a 'type' attribute with a value of 'text/css' to the 'link' element",
+                $warning->getTitle()
+            );
+            $this->assertEquals('', $warning->getContext());
+            $this->assertEquals(5, $warning->getLineNumber());
+            $this->assertTrue($warning->isWarning());
+            $this->assertEquals(0, $warning->getLevel());
+            $this->assertEquals('http://example.com/', $warning->getRef());
+        } else {
+            $this->fail('$warning is not an instance of WarningMessage');
+        }
     }
 
     public function testCreateFailure()
@@ -73,11 +76,15 @@ class MessageFactoryTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals(0, $warning->getLevel());
     }
 
-    private function createMessageDomElement(string $fixtureName): \DOMElement
+    private function createMessageDomElement(string $fixtureName): ?\DOMElement
     {
         $outputDom = new \DOMDocument();
         $outputDom->loadXML(FixtureLoader::load($fixtureName));
 
-        return $outputDom->getElementsByTagName('message')->item(0);
+        $element = $outputDom->getElementsByTagName('message')->item(0);
+
+        return $element instanceof \DOMElement
+            ? $element
+            : null;
     }
 }

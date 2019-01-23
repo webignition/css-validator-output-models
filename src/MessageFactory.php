@@ -13,7 +13,7 @@ class MessageFactory
     /**
      * @param \DOMElement $messageElement
      *
-     * @return WarningMessage|ErrorMessage|null
+     * @return WarningMessage|ErrorMessage|AbstractMessage|null
      */
     public static function createFromDOMElement(\DOMElement $messageElement): ?AbstractMessage
     {
@@ -24,7 +24,6 @@ class MessageFactory
         }
 
         $contextNode = $messageElement->getElementsByTagName('context')->item(0);
-
         if (!$contextNode instanceof \DOMElement) {
             return null;
         }
@@ -42,8 +41,7 @@ class MessageFactory
 
     public static function createWarningFromError(ErrorMessage $error): WarningMessage
     {
-        /* @var WarningMessage $warningMessage */
-        $warningMessage = self::createIssueMessageFromArray([
+        $warningMessage = self::createWarningMessageFromArray([
             self::ARRAY_KEY_TYPE => AbstractIssueMessage::TYPE_WARNING,
             self::ARRAY_KEY_TITLE => $error->getTitle(),
             self::ARRAY_KEY_CONTEXT => $error->getContext(),
@@ -54,18 +52,36 @@ class MessageFactory
         return $warningMessage;
     }
 
-    private static function createIssueMessageFromArray(array $messageData): ?AbstractIssueMessage
+    /**
+     * @param array $messageData
+     *
+     * @return AbstractIssueMessage
+     */
+    private static function createIssueMessageFromArray(array $messageData): AbstractIssueMessage
     {
-        $type = $messageData[self::ARRAY_KEY_TYPE];
-        $title  = $messageData[self::ARRAY_KEY_TITLE];
-        $context  = $messageData[self::ARRAY_KEY_CONTEXT];
-        $ref  = $messageData[self::ARRAY_KEY_REF];
-        $lineNumber  = $messageData[self::ARRAY_KEY_LINE_NUMBER];
-
-        if (AbstractIssueMessage::TYPE_ERROR === $type) {
-            return new ErrorMessage($title, $lineNumber, $context, $ref);
+        if (AbstractIssueMessage::TYPE_ERROR === $messageData[self::ARRAY_KEY_TYPE]) {
+            return self::createErrorMessageFromArray($messageData);
         }
 
+        return self::createWarningMessageFromArray($messageData);
+    }
+
+    private static function createErrorMessageFromArray(array $messageData): ErrorMessage
+    {
+        $title  = $messageData[self::ARRAY_KEY_TITLE];
+        $lineNumber  = $messageData[self::ARRAY_KEY_LINE_NUMBER];
+        $context  = $messageData[self::ARRAY_KEY_CONTEXT];
+        $ref  = $messageData[self::ARRAY_KEY_REF];
+
+        return new ErrorMessage($title, $lineNumber, $context, $ref);
+    }
+
+    private static function createWarningMessageFromArray(array $messageData): WarningMessage
+    {
+        $title  = $messageData[self::ARRAY_KEY_TITLE];
+        $lineNumber  = $messageData[self::ARRAY_KEY_LINE_NUMBER];
+        $context  = $messageData[self::ARRAY_KEY_CONTEXT];
+        $ref  = $messageData[self::ARRAY_KEY_REF];
         $level = 0;
 
         return new WarningMessage($title, $lineNumber, $context, $ref, $level);
