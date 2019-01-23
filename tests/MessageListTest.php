@@ -198,7 +198,7 @@ class MessageListTest extends \PHPUnit\Framework\TestCase
                 ]),
                 'mutator' => function (AbstractMessage $message) {
                     /* @var ErrorMessage $message */
-                    if ($message->isError()) {
+                    if ($message instanceof ErrorMessage) {
                         $message = $message->withRef('updated-ref');
                     }
 

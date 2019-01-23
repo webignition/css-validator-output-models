@@ -63,6 +63,6 @@ abstract class AbstractMessage implements \JsonSerializable
 
     public function getHash()
     {
-        return md5(json_encode($this));
+        return md5((string) json_encode($this));
     }
 }

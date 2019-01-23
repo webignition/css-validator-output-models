@@ -1,13 +1,14 @@
 language: php
 php:
-- 7.2
+  - 7.2
 
 install:
-- composer install --prefer-dist
+  - composer install --prefer-dist
 
 script:
-- composer cs
-- composer test
+  - composer static-analysis
+  - composer cs
+  - composer test
 
 cache:
   directories:
