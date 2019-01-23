@@ -142,14 +142,8 @@ class MessageListTest extends \PHPUnit\Framework\TestCase
     /**
      * @dataProvider mutateDataProvider
      */
-    public function testMutate(array $messages, callable $mutator, array $expectedMessages)
+    public function testMutate(MessageList $originalMessageList, callable $mutator, array $expectedMessages)
     {
-        $originalMessageList = new MessageList();
-
-        foreach ($messages as $message) {
-            $originalMessageList->addMessage($message);
-        }
-
         $mutatedMessageList = $originalMessageList->mutate($mutator);
         $this->assertNotSame($originalMessageList, $mutatedMessageList);
 
@@ -166,16 +160,16 @@ class MessageListTest extends \PHPUnit\Framework\TestCase
     {
         return [
             'no messages, non-modifying mutator' => [
-                'messages' => [],
+                'originalMessageList' => new MessageList(),
                 'mutator' => function (AbstractMessage $message) {
                     return $message;
                 },
                 'expectedMessages' => [],
             ],
             'has messages, non-modifying mutator' => [
-                'messages' => [
+                'originalMessageList' => new MessageList([
                     new ErrorMessage('title', 0, 'context', 'ref'),
-                ],
+                ]),
                 'mutator' => function (AbstractMessage $message) {
                     return $message;
                 },
@@ -184,9 +178,9 @@ class MessageListTest extends \PHPUnit\Framework\TestCase
                 ],
             ],
             'has messages, non-matching modifying mutator' => [
-                'messages' => [
+                'originalMessageList' => new MessageList([
                     new ErrorMessage('title', 0, 'context', 'ref'),
-                ],
+                ]),
                 'mutator' => function (AbstractMessage $message) {
                     if ($message->isWarning()) {
                         $message = $message->withTitle('updated title');
@@ -199,9 +193,9 @@ class MessageListTest extends \PHPUnit\Framework\TestCase
                 ],
             ],
             'has messages, matching modifying mutator' => [
-                'messages' => [
+                'originalMessageList' => new MessageList([
                     new ErrorMessage('title', 0, 'context', 'original-ref'),
-                ],
+                ]),
                 'mutator' => function (AbstractMessage $message) {
                     /* @var ErrorMessage $message */
                     if ($message->isError()) {
@@ -220,14 +214,8 @@ class MessageListTest extends \PHPUnit\Framework\TestCase
     /**
      * @dataProvider filterDataProvider
      */
-    public function testFilter(array $messages, callable $matcher, array $expectedMessages)
+    public function testFilter(MessageList $originalMessageList, callable $matcher, array $expectedMessages)
     {
-        $originalMessageList = new MessageList();
-
-        foreach ($messages as $message) {
-            $originalMessageList->addMessage($message);
-        }
-
         $filteredMessageList = $originalMessageList->filter($matcher);
         $this->assertNotSame($originalMessageList, $filteredMessageList);
 
@@ -244,16 +232,16 @@ class MessageListTest extends \PHPUnit\Framework\TestCase
     {
         return [
             'no messages, non-filtering filter' => [
-                'messages' => [],
+                'originalMessageList' => new MessageList(),
                 'matcher' => function (AbstractMessage $message): bool {
                     return true;
                 },
                 'expectedMessages' => [],
             ],
             'has messages, non-filtering filter' => [
-                'messages' => [
+                'originalMessageList' => new MessageList([
                     new ErrorMessage('title', 0, 'context', 'ref'),
-                ],
+                ]),
                 'matcher' => function (AbstractMessage $message): bool {
                     return true;
                 },
@@ -262,9 +250,9 @@ class MessageListTest extends \PHPUnit\Framework\TestCase
                 ],
             ],
             'has messages, non-matching filtering filter' => [
-                'messages' => [
+                'originalMessageList' => new MessageList([
                     new ErrorMessage('title', 0, 'context', 'non-matching-ref'),
-                ],
+                ]),
                 'matcher' => function (AbstractMessage $message): bool {
                     if (!$message instanceof AbstractIssueMessage) {
                         return true;
@@ -277,10 +265,10 @@ class MessageListTest extends \PHPUnit\Framework\TestCase
                 ],
             ],
             'has messages, matching filtering filter' => [
-                'messages' => [
+                'originalMessageList' => new MessageList([
                     new ErrorMessage('title', 0, 'context', 'matching-ref'),
                     new ErrorMessage('title', 0, 'context', 'non-matching-ref'),
-                ],
+                ]),
                 'matcher' => function (AbstractMessage $message): bool {
                     if (!$message instanceof AbstractIssueMessage) {
                         return true;
