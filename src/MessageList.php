@@ -15,7 +15,7 @@ class MessageList
 
     public function addMessage(AbstractMessage $message)
     {
-        $this->messages[] = $message;
+        $this->messages[$message->getHash()] = $message;
 
         if ($message->isError()) {
             $this->errorCount++;
@@ -93,6 +93,11 @@ class MessageList
                 }
             }
         );
+    }
+
+    public function contains(AbstractMessage $message): bool
+    {
+        return array_key_exists($message->getHash(), $this->messages);
     }
 
     private function map(callable $callable): MessageList

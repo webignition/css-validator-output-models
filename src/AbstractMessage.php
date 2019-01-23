@@ -60,4 +60,9 @@ abstract class AbstractMessage implements \JsonSerializable
             self::KEY_TITLE => $this->title,
         ];
     }
+
+    public function getHash()
+    {
+        return md5(json_encode($this));
+    }
 }

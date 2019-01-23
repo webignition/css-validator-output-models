@@ -112,7 +112,7 @@ class MessageListTest extends \PHPUnit\Framework\TestCase
                 new WarningMessage('warning2', 4, '.warning2', 'ref2', 0),
                 new ErrorMessage('error3', 5, '.error3', 'ref2'),
             ],
-            $this->messageList->getMessages()
+            array_values($this->messageList->getMessages())
         );
     }
 
@@ -153,7 +153,7 @@ class MessageListTest extends \PHPUnit\Framework\TestCase
         $mutatedMessageList = $originalMessageList->mutate($mutator);
         $this->assertNotSame($originalMessageList, $mutatedMessageList);
 
-        $mutatedMessages = $mutatedMessageList->getMessages();
+        $mutatedMessages = array_values($mutatedMessageList->getMessages());
         /** @noinspection PhpParamsInspection */
         $this->assertCount(count($expectedMessages), $mutatedMessages);
 
@@ -231,7 +231,7 @@ class MessageListTest extends \PHPUnit\Framework\TestCase
         $filteredMessageList = $originalMessageList->filter($matcher);
         $this->assertNotSame($originalMessageList, $filteredMessageList);
 
-        $filteredMessages = $filteredMessageList->getMessages();
+        $filteredMessages = array_values($filteredMessageList->getMessages());
         /** @noinspection PhpParamsInspection */
         $this->assertCount(count($expectedMessages), $filteredMessages);
 
