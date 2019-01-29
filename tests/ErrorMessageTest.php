@@ -4,8 +4,8 @@
 namespace webignition\CssValidatorOutput\Model\Tests;
 
 use webignition\CssValidatorOutput\Model\AbstractIssueMessage;
-use webignition\CssValidatorOutput\Model\AbstractMessage;
 use webignition\CssValidatorOutput\Model\ErrorMessage;
+use webignition\ValidatorMessage\MessageInterface;
 
 class ErrorMessageTest extends \PHPUnit\Framework\TestCase
 {
@@ -63,7 +63,7 @@ class ErrorMessageTest extends \PHPUnit\Framework\TestCase
 
         $this->assertEquals(
             [
-                AbstractIssueMessage::KEY_TYPE => AbstractMessage::TYPE_ERROR,
+                AbstractIssueMessage::KEY_TYPE => MessageInterface::TYPE_ERROR,
                 AbstractIssueMessage::KEY_MESSAGE => $message,
                 AbstractIssueMessage::KEY_CONTEXT => $context,
                 AbstractIssueMessage::KEY_LINE_NUMBER => $lineNumber,
@@ -71,20 +71,6 @@ class ErrorMessageTest extends \PHPUnit\Framework\TestCase
             ],
             $error->jsonSerialize()
         );
-    }
-
-    public function testWithMessage()
-    {
-        $originalMessage = 'original message';
-        $updatedMessage = 'updated message';
-
-        $error = new ErrorMessage($originalMessage, 0, '', '');
-        $this->assertEquals($originalMessage, $error->getMessage());
-
-        $updatedError = $error->withMessage($updatedMessage);
-        $this->assertEquals($updatedMessage, $updatedError->getMessage());
-        $this->assertEquals($originalMessage, $error->getMessage());
-        $this->assertNotSame($updatedError, $error);
     }
 
     public function testWithLineNumber()

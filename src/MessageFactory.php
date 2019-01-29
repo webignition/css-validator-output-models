@@ -2,6 +2,8 @@
 
 namespace webignition\CssValidatorOutput\Model;
 
+use webignition\ValidatorMessage\MessageInterface;
+
 class MessageFactory
 {
     const ARRAY_KEY_TYPE = 'type';
@@ -13,13 +15,13 @@ class MessageFactory
     /**
      * @param \DOMElement $messageElement
      *
-     * @return WarningMessage|ErrorMessage|AbstractMessage|null
+     * @return WarningMessage|ErrorMessage|MessageInterface|null
      */
-    public static function createFromDOMElement(\DOMElement $messageElement): ?AbstractMessage
+    public static function createFromDOMElement(\DOMElement $messageElement): ?MessageInterface
     {
         $type = $messageElement->getAttribute('type');
 
-        if (AbstractMessage::TYPE_ERROR !== $type && AbstractMessage::TYPE_WARNING !== $type) {
+        if (MessageInterface::TYPE_ERROR !== $type && MessageInterface::TYPE_WARNING !== $type) {
             return null;
         }
 

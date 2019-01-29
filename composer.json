@@ -32,7 +32,8 @@
         ]
     },
     "require": {
-        "php": ">=7.2.0"
+        "php": ">=7.2.0",
+        "webignition/validator-message": ">=0.2,<2"
 
     },
     "require-dev": {

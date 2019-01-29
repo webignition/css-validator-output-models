@@ -4,8 +4,8 @@
 namespace webignition\CssValidatorOutput\Model\Tests;
 
 use webignition\CssValidatorOutput\Model\AbstractIssueMessage;
-use webignition\CssValidatorOutput\Model\AbstractMessage;
 use webignition\CssValidatorOutput\Model\WarningMessage;
+use webignition\ValidatorMessage\MessageInterface;
 
 class WarningMessageTest extends \PHPUnit\Framework\TestCase
 {
@@ -21,7 +21,7 @@ class WarningMessageTest extends \PHPUnit\Framework\TestCase
     ) {
         $warning = new WarningMessage($message, $lineNumber, $context, $ref, $level);
 
-        $this->assertEquals(WarningMessage::TYPE_WARNING, $warning->getType());
+        $this->assertEquals(MessageInterface::TYPE_WARNING, $warning->getType());
         $this->assertEquals($message, $warning->getMessage());
         $this->assertEquals($lineNumber, $warning->getLineNumber());
         $this->assertEquals($context, $warning->getContext());
@@ -67,7 +67,7 @@ class WarningMessageTest extends \PHPUnit\Framework\TestCase
 
         $this->assertEquals(
             [
-                AbstractIssueMessage::KEY_TYPE => AbstractMessage::TYPE_WARNING,
+                AbstractIssueMessage::KEY_TYPE => MessageInterface::TYPE_WARNING,
                 AbstractIssueMessage::KEY_MESSAGE => $message,
                 AbstractIssueMessage::KEY_CONTEXT => $context,
                 AbstractIssueMessage::KEY_LINE_NUMBER => $lineNumber,
@@ -76,20 +76,6 @@ class WarningMessageTest extends \PHPUnit\Framework\TestCase
             ],
             $warning->jsonSerialize()
         );
-    }
-
-    public function testWithTitle()
-    {
-        $originalTitle = 'original title';
-        $updatedTitle = 'updatedTitle';
-
-        $warning = new WarningMessage($originalTitle, 0, '', '', 0);
-        $this->assertEquals($originalTitle, $warning->getMessage());
-
-        $updatedWarning = $warning->withMessage($updatedTitle);
-        $this->assertEquals($updatedTitle, $updatedWarning->getMessage());
-        $this->assertEquals($originalTitle, $warning->getMessage());
-        $this->assertNotSame($updatedWarning, $warning);
     }
 
     public function testWithLineNumber()

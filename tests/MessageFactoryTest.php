@@ -4,10 +4,10 @@
 
 namespace webignition\CssValidatorOutput\Model\Tests;
 
-use webignition\CssValidatorOutput\Model\AbstractMessage;
 use webignition\CssValidatorOutput\Model\ErrorMessage;
 use webignition\CssValidatorOutput\Model\MessageFactory;
 use webignition\CssValidatorOutput\Model\WarningMessage;
+use webignition\ValidatorMessage\MessageInterface;
 
 class MessageFactoryTest extends \PHPUnit\Framework\TestCase
 {
@@ -40,7 +40,7 @@ class MessageFactoryTest extends \PHPUnit\Framework\TestCase
         ));
 
         if ($error instanceof ErrorMessage) {
-            $this->assertEquals(AbstractMessage::TYPE_ERROR, $error->getType());
+            $this->assertEquals(MessageInterface::TYPE_ERROR, $error->getType());
             $this->assertEquals('Parse Error
             *display: inline;', $error->getMessage());
             $this->assertEquals('audio, canvas, video', $error->getContext());
@@ -60,7 +60,7 @@ class MessageFactoryTest extends \PHPUnit\Framework\TestCase
         ));
 
         if ($warning instanceof WarningMessage) {
-            $this->assertEquals(AbstractMessage::TYPE_WARNING, $warning->getType());
+            $this->assertEquals(MessageInterface::TYPE_WARNING, $warning->getType());
             $this->assertEquals(
                 "You should add a 'type' attribute with a value of 'text/css' to the 'link' element",
                 $warning->getMessage()
