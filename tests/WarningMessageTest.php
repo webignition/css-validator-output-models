@@ -78,20 +78,6 @@ class WarningMessageTest extends \PHPUnit\Framework\TestCase
         );
     }
 
-    public function testWithTitle()
-    {
-        $originalMessage = 'original message';
-        $updatedMessage = 'updated message';
-
-        $warning = new WarningMessage($originalMessage, 0, '', '', 0);
-        $this->assertEquals($originalMessage, $warning->getMessage());
-
-        $updatedWarning = $warning->withMessage($updatedMessage);
-        $this->assertEquals($updatedMessage, $updatedWarning->getMessage());
-        $this->assertEquals($originalMessage, $warning->getMessage());
-        $this->assertNotSame($updatedWarning, $warning);
-    }
-
     public function testWithLineNumber()
     {
         $originalLineNumber = 1;

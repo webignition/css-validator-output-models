@@ -73,20 +73,6 @@ class ErrorMessageTest extends \PHPUnit\Framework\TestCase
         );
     }
 
-    public function testWithMessage()
-    {
-        $originalMessage = 'original message';
-        $updatedMessage = 'updated message';
-
-        $error = new ErrorMessage($originalMessage, 0, '', '');
-        $this->assertEquals($originalMessage, $error->getMessage());
-
-        $updatedError = $error->withMessage($updatedMessage);
-        $this->assertEquals($updatedMessage, $updatedError->getMessage());
-        $this->assertEquals($originalMessage, $error->getMessage());
-        $this->assertNotSame($updatedError, $error);
-    }
-
     public function testWithLineNumber()
     {
         $originalLineNumber = 1;
