@@ -183,7 +183,7 @@ class MessageListTest extends \PHPUnit\Framework\TestCase
                 ]),
                 'mutator' => function (AbstractMessage $message) {
                     if ($message->isWarning()) {
-                        $message = $message->withTitle('updated title');
+                        $message = $message->withMessage('updated title');
                     }
 
                     return $message;

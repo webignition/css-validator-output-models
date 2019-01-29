@@ -12,9 +12,9 @@ abstract class AbstractIssueMessage extends AbstractMessage implements \JsonSeri
     private $lineNumber;
     private $context;
 
-    public function __construct(string $type, string $title, int $lineNumber, string $context, string $ref)
+    public function __construct(string $type, string $message, int $lineNumber, string $context, string $ref)
     {
-        parent::__construct($type, $title);
+        parent::__construct($type, $message);
 
         $this->lineNumber = $lineNumber;
         $this->context = $context;

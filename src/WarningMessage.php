@@ -8,9 +8,9 @@ class WarningMessage extends AbstractIssueMessage implements \JsonSerializable
 
     private $level;
 
-    public function __construct(string $title, int $lineNumber, string $context, string $ref, int $level)
+    public function __construct(string $message, int $lineNumber, string $context, string $ref, int $level)
     {
-        parent::__construct(self::TYPE_WARNING, $title, $lineNumber, $context, $ref);
+        parent::__construct(self::TYPE_WARNING, $message, $lineNumber, $context, $ref);
 
         $this->level = $level;
     }

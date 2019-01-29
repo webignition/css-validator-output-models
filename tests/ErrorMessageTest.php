@@ -13,15 +13,15 @@ class ErrorMessageTest extends \PHPUnit\Framework\TestCase
      * @dataProvider createDataProvider
      */
     public function testCreate(
-        string $title,
+        string $message,
         int $lineNumber,
         string $context,
         string $ref
     ) {
-        $error = new ErrorMessage($title, $lineNumber, $context, $ref);
+        $error = new ErrorMessage($message, $lineNumber, $context, $ref);
 
         $this->assertEquals(ErrorMessage::TYPE_ERROR, $error->getType());
-        $this->assertEquals($title, $error->getTitle());
+        $this->assertEquals($message, $error->getMessage());
         $this->assertEquals($lineNumber, $error->getLineNumber());
         $this->assertEquals($context, $error->getContext());
         $this->assertEquals($ref, $error->getRef());
@@ -34,7 +34,7 @@ class ErrorMessageTest extends \PHPUnit\Framework\TestCase
     {
         return [
             'no ref' => [
-                'title' => 'Parse Error',
+                'message' => 'Parse Error',
                 'lineNumber' => 1,
                 'context' => 'unparseable',
                 'ref' => '',
@@ -42,7 +42,7 @@ class ErrorMessageTest extends \PHPUnit\Framework\TestCase
                 'expectedIsWarning' => false,
             ],
             'has ref' => [
-                'title' => 'Parse Error',
+                'message' => 'Parse Error',
                 'lineNumber' => 2,
                 'context' => 'unparseable',
                 'ref' => 'http://example.com/',
@@ -54,17 +54,17 @@ class ErrorMessageTest extends \PHPUnit\Framework\TestCase
 
     public function testJsonSerialize()
     {
-        $title = 'title';
+        $message = 'message';
         $lineNumber = 1;
         $context = '.foo';
         $ref = 'http://example.com';
 
-        $error = new ErrorMessage($title, $lineNumber, $context, $ref);
+        $error = new ErrorMessage($message, $lineNumber, $context, $ref);
 
         $this->assertEquals(
             [
                 AbstractIssueMessage::KEY_TYPE => AbstractMessage::TYPE_ERROR,
-                AbstractIssueMessage::KEY_TITLE => $title,
+                AbstractIssueMessage::KEY_MESSAGE => $message,
                 AbstractIssueMessage::KEY_CONTEXT => $context,
                 AbstractIssueMessage::KEY_LINE_NUMBER => $lineNumber,
                 AbstractIssueMessage::KEY_REF => $ref,
@@ -73,17 +73,17 @@ class ErrorMessageTest extends \PHPUnit\Framework\TestCase
         );
     }
 
-    public function testWithTitle()
+    public function testWithMessage()
     {
-        $originalTitle = 'original title';
-        $updatedTitle = 'updatedTitle';
+        $originalMessage = 'original message';
+        $updatedMessage = 'updated message';
 
-        $error = new ErrorMessage($originalTitle, 0, '', '');
-        $this->assertEquals($originalTitle, $error->getTitle());
+        $error = new ErrorMessage($originalMessage, 0, '', '');
+        $this->assertEquals($originalMessage, $error->getMessage());
 
-        $updatedError = $error->withTitle($updatedTitle);
-        $this->assertEquals($updatedTitle, $updatedError->getTitle());
-        $this->assertEquals($originalTitle, $error->getTitle());
+        $updatedError = $error->withMessage($updatedMessage);
+        $this->assertEquals($updatedMessage, $updatedError->getMessage());
+        $this->assertEquals($originalMessage, $error->getMessage());
         $this->assertNotSame($updatedError, $error);
     }
 

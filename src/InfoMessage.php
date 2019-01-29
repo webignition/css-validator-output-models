@@ -8,9 +8,9 @@ class InfoMessage extends AbstractMessage implements \JsonSerializable
 
     private $description;
 
-    public function __construct(string $title, string $description)
+    public function __construct(string $message, string $description)
     {
-        parent::__construct(self::TYPE_INFO, $title);
+        parent::__construct(self::TYPE_INFO, $message);
 
         $this->description = $description;
     }
