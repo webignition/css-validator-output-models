@@ -2,10 +2,12 @@
 
 namespace webignition\CssValidatorOutput\Model;
 
+use webignition\ValidatorMessage\MessageInterface;
+
 class MessageList
 {
     /**
-     * @var AbstractMessage[]
+     * @var MessageInterface[]
      */
     private $messages = [];
 
@@ -16,13 +18,13 @@ class MessageList
     public function __construct(array $messages = [])
     {
         foreach ($messages as $message) {
-            if ($message instanceof AbstractMessage) {
+            if ($message instanceof MessageInterface) {
                 $this->addMessage($message);
             }
         }
     }
 
-    public function addMessage(AbstractMessage $message)
+    public function addMessage(MessageInterface $message)
     {
         $this->messages[$message->getHash()] = $message;
 
@@ -42,7 +44,7 @@ class MessageList
 
     public function getErrors(): array
     {
-        return $this->getMessagesOfType(AbstractMessage::TYPE_ERROR);
+        return $this->getMessagesOfType(MessageInterface::TYPE_ERROR);
     }
 
     public function getErrorsByRef(string $ref): array
@@ -61,7 +63,7 @@ class MessageList
 
     public function getWarnings(): array
     {
-        return $this->getMessagesOfType(AbstractMessage::TYPE_WARNING);
+        return $this->getMessagesOfType(MessageInterface::TYPE_WARNING);
     }
 
     public function getErrorCount(): int
@@ -87,7 +89,7 @@ class MessageList
     public function mutate(callable $mutator): MessageList
     {
         return $this->map(
-            function (MessageList &$messageList, AbstractMessage $message) use ($mutator) {
+            function (MessageList &$messageList, MessageInterface $message) use ($mutator) {
                 $messageList->addMessage($mutator($message));
             }
         );
@@ -96,7 +98,7 @@ class MessageList
     public function filter(callable $matcher): MessageList
     {
         return $this->map(
-            function (MessageList &$messageList, AbstractMessage $message) use ($matcher) {
+            function (MessageList &$messageList, MessageInterface $message) use ($matcher) {
                 if ($matcher($message)) {
                     $messageList->addMessage($message);
                 }
@@ -104,7 +106,7 @@ class MessageList
         );
     }
 
-    public function contains(AbstractMessage $message): bool
+    public function contains(MessageInterface $message): bool
     {
         return array_key_exists($message->getHash(), $this->messages);
     }

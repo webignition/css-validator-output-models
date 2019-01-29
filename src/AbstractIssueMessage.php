@@ -2,6 +2,8 @@
 
 namespace webignition\CssValidatorOutput\Model;
 
+use webignition\ValidatorMessage\AbstractMessage;
+
 abstract class AbstractIssueMessage extends AbstractMessage implements \JsonSerializable
 {
     const KEY_CONTEXT = 'context';

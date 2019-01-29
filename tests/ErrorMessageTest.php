@@ -4,8 +4,8 @@
 namespace webignition\CssValidatorOutput\Model\Tests;
 
 use webignition\CssValidatorOutput\Model\AbstractIssueMessage;
-use webignition\CssValidatorOutput\Model\AbstractMessage;
 use webignition\CssValidatorOutput\Model\ErrorMessage;
+use webignition\ValidatorMessage\MessageInterface;
 
 class ErrorMessageTest extends \PHPUnit\Framework\TestCase
 {
@@ -63,7 +63,7 @@ class ErrorMessageTest extends \PHPUnit\Framework\TestCase
 
         $this->assertEquals(
             [
-                AbstractIssueMessage::KEY_TYPE => AbstractMessage::TYPE_ERROR,
+                AbstractIssueMessage::KEY_TYPE => MessageInterface::TYPE_ERROR,
                 AbstractIssueMessage::KEY_MESSAGE => $message,
                 AbstractIssueMessage::KEY_CONTEXT => $context,
                 AbstractIssueMessage::KEY_LINE_NUMBER => $lineNumber,

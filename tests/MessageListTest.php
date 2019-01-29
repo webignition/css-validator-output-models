@@ -5,11 +5,11 @@
 namespace webignition\CssValidatorOutput\Model\Tests;
 
 use webignition\CssValidatorOutput\Model\AbstractIssueMessage;
-use webignition\CssValidatorOutput\Model\AbstractMessage;
 use webignition\CssValidatorOutput\Model\ErrorMessage;
 use webignition\CssValidatorOutput\Model\InfoMessage;
 use webignition\CssValidatorOutput\Model\MessageList;
 use webignition\CssValidatorOutput\Model\WarningMessage;
+use webignition\ValidatorMessage\MessageInterface;
 
 class MessageListTest extends \PHPUnit\Framework\TestCase
 {
@@ -42,7 +42,7 @@ class MessageListTest extends \PHPUnit\Framework\TestCase
      * @dataProvider addMessageDataProvider
      */
     public function testAddMessage(
-        AbstractMessage $message,
+        MessageInterface $message,
         int $expectedErrorCount,
         int $expectedWarningCount,
         int $expectedInfoCount,
@@ -161,7 +161,7 @@ class MessageListTest extends \PHPUnit\Framework\TestCase
         return [
             'no messages, non-modifying mutator' => [
                 'originalMessageList' => new MessageList(),
-                'mutator' => function (AbstractMessage $message) {
+                'mutator' => function (MessageInterface $message) {
                     return $message;
                 },
                 'expectedMessages' => [],
@@ -170,7 +170,7 @@ class MessageListTest extends \PHPUnit\Framework\TestCase
                 'originalMessageList' => new MessageList([
                     new ErrorMessage('title', 0, 'context', 'ref'),
                 ]),
-                'mutator' => function (AbstractMessage $message) {
+                'mutator' => function (MessageInterface $message) {
                     return $message;
                 },
                 'expectedMessages' => [
@@ -181,7 +181,7 @@ class MessageListTest extends \PHPUnit\Framework\TestCase
                 'originalMessageList' => new MessageList([
                     new ErrorMessage('title', 0, 'context', 'ref'),
                 ]),
-                'mutator' => function (AbstractMessage $message) {
+                'mutator' => function (MessageInterface $message) {
                     if ($message->isWarning()) {
                         $message = $message->withMessage('updated title');
                     }
@@ -196,7 +196,7 @@ class MessageListTest extends \PHPUnit\Framework\TestCase
                 'originalMessageList' => new MessageList([
                     new ErrorMessage('title', 0, 'context', 'original-ref'),
                 ]),
-                'mutator' => function (AbstractMessage $message) {
+                'mutator' => function (MessageInterface $message) {
                     /* @var ErrorMessage $message */
                     if ($message instanceof ErrorMessage) {
                         $message = $message->withRef('updated-ref');
@@ -233,7 +233,7 @@ class MessageListTest extends \PHPUnit\Framework\TestCase
         return [
             'no messages, non-filtering filter' => [
                 'originalMessageList' => new MessageList(),
-                'matcher' => function (AbstractMessage $message): bool {
+                'matcher' => function (MessageInterface $message): bool {
                     return true;
                 },
                 'expectedMessages' => [],
@@ -242,7 +242,7 @@ class MessageListTest extends \PHPUnit\Framework\TestCase
                 'originalMessageList' => new MessageList([
                     new ErrorMessage('title', 0, 'context', 'ref'),
                 ]),
-                'matcher' => function (AbstractMessage $message): bool {
+                'matcher' => function (MessageInterface $message): bool {
                     return true;
                 },
                 'expectedMessages' => [
@@ -253,7 +253,7 @@ class MessageListTest extends \PHPUnit\Framework\TestCase
                 'originalMessageList' => new MessageList([
                     new ErrorMessage('title', 0, 'context', 'non-matching-ref'),
                 ]),
-                'matcher' => function (AbstractMessage $message): bool {
+                'matcher' => function (MessageInterface $message): bool {
                     if (!$message instanceof AbstractIssueMessage) {
                         return true;
                     }
@@ -269,7 +269,7 @@ class MessageListTest extends \PHPUnit\Framework\TestCase
                     new ErrorMessage('title', 0, 'context', 'matching-ref'),
                     new ErrorMessage('title', 0, 'context', 'non-matching-ref'),
                 ]),
-                'matcher' => function (AbstractMessage $message): bool {
+                'matcher' => function (MessageInterface $message): bool {
                     if (!$message instanceof AbstractIssueMessage) {
                         return true;
                     }

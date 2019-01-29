@@ -2,6 +2,8 @@
 
 namespace webignition\CssValidatorOutput\Model;
 
+use webignition\ValidatorMessage\AbstractMessage;
+
 class InfoMessage extends AbstractMessage implements \JsonSerializable
 {
     const KEY_DESCRIPTION = 'description';

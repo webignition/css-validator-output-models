@@ -2,37 +2,37 @@
 
 namespace webignition\CssValidatorOutput\Model\Tests;
 
-use webignition\CssValidatorOutput\Model\AbstractMessage;
 use webignition\CssValidatorOutput\Model\InfoMessage;
+use webignition\ValidatorMessage\MessageInterface;
 
 class InfoMessageTest extends \PHPUnit\Framework\TestCase
 {
     public function testCreate()
     {
-        $title = 'title';
+        $message = 'message';
         $description = 'description';
 
-        $infoMessage = new InfoMessage($title, $description);
+        $infoMessage = new InfoMessage($message, $description);
 
-        $this->assertEquals(AbstractMessage::TYPE_INFO, $infoMessage->getType());
+        $this->assertEquals(MessageInterface::TYPE_INFO, $infoMessage->getType());
         $this->assertTrue($infoMessage->isInfo());
         $this->assertFalse($infoMessage->isError());
         $this->assertFalse($infoMessage->isWarning());
-        $this->assertEquals($title, $infoMessage->getMessage());
+        $this->assertEquals($message, $infoMessage->getMessage());
         $this->assertEquals($description, $infoMessage->getDescription());
     }
 
     public function testJsonSerialize()
     {
-        $title = 'title';
+        $message = 'message';
         $description = 'description';
 
-        $infoMessage = new InfoMessage($title, $description);
+        $infoMessage = new InfoMessage($message, $description);
 
         $this->assertEquals(
             [
-                AbstractMessage::KEY_TYPE => AbstractMessage::TYPE_INFO,
-                AbstractMessage::KEY_MESSAGE => $title,
+                MessageInterface::KEY_TYPE => MessageInterface::TYPE_INFO,
+                MessageInterface::KEY_MESSAGE => $message,
                 InfoMessage::KEY_DESCRIPTION => $description,
             ],
             $infoMessage->jsonSerialize()
@@ -41,15 +41,15 @@ class InfoMessageTest extends \PHPUnit\Framework\TestCase
 
     public function testWithTitle()
     {
-        $originalTitle = 'original title';
-        $updatedTitle = 'updatedTitle';
+        $originalMessage = 'original message';
+        $updatedMessage = 'updated message';
 
-        $infoMessage = new InfoMessage($originalTitle, '');
-        $this->assertEquals($originalTitle, $infoMessage->getMessage());
+        $infoMessage = new InfoMessage($originalMessage, '');
+        $this->assertEquals($originalMessage, $infoMessage->getMessage());
 
-        $updatedInfoMessage = $infoMessage->withMessage($updatedTitle);
-        $this->assertEquals($updatedTitle, $updatedInfoMessage->getMessage());
-        $this->assertEquals($originalTitle, $infoMessage->getMessage());
+        $updatedInfoMessage = $infoMessage->withMessage($updatedMessage);
+        $this->assertEquals($updatedMessage, $updatedInfoMessage->getMessage());
+        $this->assertEquals($originalMessage, $infoMessage->getMessage());
         $this->assertNotSame($updatedInfoMessage, $infoMessage);
     }
 }
