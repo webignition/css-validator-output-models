@@ -46,7 +46,7 @@ class MessageFactory
     {
         $warningMessage = self::createWarningMessageFromArray([
             self::ARRAY_KEY_TYPE => AbstractIssueMessage::TYPE_WARNING,
-            self::ARRAY_KEY_TITLE => $error->getTitle(),
+            self::ARRAY_KEY_TITLE => $error->getMessage(),
             self::ARRAY_KEY_CONTEXT => $error->getContext(),
             self::ARRAY_KEY_REF => $error->getRef(),
             self::ARRAY_KEY_LINE_NUMBER => $error->getLineNumber()

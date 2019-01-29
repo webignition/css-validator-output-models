@@ -42,7 +42,7 @@ class MessageFactoryTest extends \PHPUnit\Framework\TestCase
         if ($error instanceof ErrorMessage) {
             $this->assertEquals(AbstractMessage::TYPE_ERROR, $error->getType());
             $this->assertEquals('Parse Error
-            *display: inline;', $error->getTitle());
+            *display: inline;', $error->getMessage());
             $this->assertEquals('audio, canvas, video', $error->getContext());
             $this->assertEquals(28, $error->getLineNumber());
             $this->assertTrue($error->isError());
@@ -63,7 +63,7 @@ class MessageFactoryTest extends \PHPUnit\Framework\TestCase
             $this->assertEquals(AbstractMessage::TYPE_WARNING, $warning->getType());
             $this->assertEquals(
                 "You should add a 'type' attribute with a value of 'text/css' to the 'link' element",
-                $warning->getTitle()
+                $warning->getMessage()
             );
             $this->assertEquals('', $warning->getContext());
             $this->assertEquals(5, $warning->getLineNumber());
@@ -96,7 +96,7 @@ class MessageFactoryTest extends \PHPUnit\Framework\TestCase
         $warning = MessageFactory::createWarningFromError($error);
 
         $this->assertInstanceOf(WarningMessage::class, $warning);
-        $this->assertEquals($title, $warning->getTitle());
+        $this->assertEquals($title, $warning->getMessage());
         $this->assertEquals($context, $warning->getContext());
         $this->assertEquals($ref, $warning->getRef());
         $this->assertEquals($lineNumber, $warning->getLineNumber());

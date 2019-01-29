@@ -13,16 +13,16 @@ class WarningMessageTest extends \PHPUnit\Framework\TestCase
      * @dataProvider createDataProvider
      */
     public function testCreate(
-        string $title,
+        string $message,
         int $lineNumber,
         string $context,
         string $ref,
         int $level
     ) {
-        $warning = new WarningMessage($title, $lineNumber, $context, $ref, $level);
+        $warning = new WarningMessage($message, $lineNumber, $context, $ref, $level);
 
         $this->assertEquals(WarningMessage::TYPE_WARNING, $warning->getType());
-        $this->assertEquals($title, $warning->getTitle());
+        $this->assertEquals($message, $warning->getMessage());
         $this->assertEquals($lineNumber, $warning->getLineNumber());
         $this->assertEquals($context, $warning->getContext());
         $this->assertEquals($ref, $warning->getRef());
@@ -35,7 +35,7 @@ class WarningMessageTest extends \PHPUnit\Framework\TestCase
     {
         return [
             'no ref' => [
-                'title' => 'Property -webkit-box-sizing is an unknown vendor extension',
+                'message' => 'Property -webkit-box-sizing is an unknown vendor extension',
                 'lineNumber' => 3,
                 'context' => '',
                 'ref' => '',
@@ -44,7 +44,7 @@ class WarningMessageTest extends \PHPUnit\Framework\TestCase
                 'expectedIsWarning' => false,
             ],
             'has ref' => [
-                'title' => 'Property -webkit-box-sizing is an unknown vendor extension',
+                'message' => 'Property -webkit-box-sizing is an unknown vendor extension',
                 'lineNumber' => 4,
                 'context' => '',
                 'ref' => 'http://example.com/',
@@ -57,18 +57,18 @@ class WarningMessageTest extends \PHPUnit\Framework\TestCase
 
     public function testJsonSerialize()
     {
-        $title = 'title';
+        $message = 'message';
         $lineNumber = 1;
         $context = '.foo';
         $ref = 'http://example.com';
         $level = 0;
 
-        $warning = new WarningMessage($title, $lineNumber, $context, $ref, $level);
+        $warning = new WarningMessage($message, $lineNumber, $context, $ref, $level);
 
         $this->assertEquals(
             [
                 AbstractIssueMessage::KEY_TYPE => AbstractMessage::TYPE_WARNING,
-                AbstractIssueMessage::KEY_TITLE => $title,
+                AbstractIssueMessage::KEY_MESSAGE => $message,
                 AbstractIssueMessage::KEY_CONTEXT => $context,
                 AbstractIssueMessage::KEY_LINE_NUMBER => $lineNumber,
                 AbstractIssueMessage::KEY_REF => $ref,
@@ -84,11 +84,11 @@ class WarningMessageTest extends \PHPUnit\Framework\TestCase
         $updatedTitle = 'updatedTitle';
 
         $warning = new WarningMessage($originalTitle, 0, '', '', 0);
-        $this->assertEquals($originalTitle, $warning->getTitle());
+        $this->assertEquals($originalTitle, $warning->getMessage());
 
-        $updatedWarning = $warning->withTitle($updatedTitle);
-        $this->assertEquals($updatedTitle, $updatedWarning->getTitle());
-        $this->assertEquals($originalTitle, $warning->getTitle());
+        $updatedWarning = $warning->withMessage($updatedTitle);
+        $this->assertEquals($updatedTitle, $updatedWarning->getMessage());
+        $this->assertEquals($originalTitle, $warning->getMessage());
         $this->assertNotSame($updatedWarning, $warning);
     }
 

@@ -18,7 +18,7 @@ class InfoMessageTest extends \PHPUnit\Framework\TestCase
         $this->assertTrue($infoMessage->isInfo());
         $this->assertFalse($infoMessage->isError());
         $this->assertFalse($infoMessage->isWarning());
-        $this->assertEquals($title, $infoMessage->getTitle());
+        $this->assertEquals($title, $infoMessage->getMessage());
         $this->assertEquals($description, $infoMessage->getDescription());
     }
 
@@ -32,7 +32,7 @@ class InfoMessageTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals(
             [
                 AbstractMessage::KEY_TYPE => AbstractMessage::TYPE_INFO,
-                AbstractMessage::KEY_TITLE => $title,
+                AbstractMessage::KEY_MESSAGE => $title,
                 InfoMessage::KEY_DESCRIPTION => $description,
             ],
             $infoMessage->jsonSerialize()
@@ -45,11 +45,11 @@ class InfoMessageTest extends \PHPUnit\Framework\TestCase
         $updatedTitle = 'updatedTitle';
 
         $infoMessage = new InfoMessage($originalTitle, '');
-        $this->assertEquals($originalTitle, $infoMessage->getTitle());
+        $this->assertEquals($originalTitle, $infoMessage->getMessage());
 
-        $updatedInfoMessage = $infoMessage->withTitle($updatedTitle);
-        $this->assertEquals($updatedTitle, $updatedInfoMessage->getTitle());
-        $this->assertEquals($originalTitle, $infoMessage->getTitle());
+        $updatedInfoMessage = $infoMessage->withMessage($updatedTitle);
+        $this->assertEquals($updatedTitle, $updatedInfoMessage->getMessage());
+        $this->assertEquals($originalTitle, $infoMessage->getMessage());
         $this->assertNotSame($updatedInfoMessage, $infoMessage);
     }
 }

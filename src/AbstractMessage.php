@@ -5,19 +5,19 @@ namespace webignition\CssValidatorOutput\Model;
 abstract class AbstractMessage implements \JsonSerializable
 {
     const KEY_TYPE = 'type';
-    const KEY_TITLE = 'message';
+    const KEY_MESSAGE = 'message';
 
     const TYPE_ERROR = 'error';
     const TYPE_WARNING = 'warning';
     const TYPE_INFO = 'info';
 
     private $type;
-    private $title;
+    private $message;
 
-    public function __construct(string $type, string $title)
+    public function __construct(string $type, string $message)
     {
         $this->type = $type;
-        $this->title = $title;
+        $this->message = $message;
     }
 
     public function getType(): string
@@ -25,15 +25,15 @@ abstract class AbstractMessage implements \JsonSerializable
         return $this->type;
     }
 
-    public function getTitle(): string
+    public function getMessage(): string
     {
-        return $this->title;
+        return $this->message;
     }
 
-    public function withTitle(string $title): self
+    public function withMessage(string $message): self
     {
         $new = clone $this;
-        $new->title = $title;
+        $new->message = $message;
 
         return $new;
     }
@@ -57,7 +57,7 @@ abstract class AbstractMessage implements \JsonSerializable
     {
         return [
             self::KEY_TYPE => $this->type,
-            self::KEY_TITLE => $this->title,
+            self::KEY_MESSAGE => $this->message,
         ];
     }
 
