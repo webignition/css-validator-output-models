@@ -4,20 +4,20 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "0a1f134997cee7c1c88d8fccc2628c04",
+    "content-hash": "3ca947eb2d8fb1bddd9d05a285ece0cf",
     "packages": [
         {
             "name": "webignition/validator-message",
-            "version": "0.2",
+            "version": "0.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/webignition/validator-message.git",
-                "reference": "24c6c3cf8b5b258099e71a960cb69a0307a70d06"
+                "reference": "16896f1f1b055256d23423b8f4f8c1ff3dda4822"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/webignition/validator-message/zipball/24c6c3cf8b5b258099e71a960cb69a0307a70d06",
-                "reference": "24c6c3cf8b5b258099e71a960cb69a0307a70d06",
+                "url": "https://api.github.com/repos/webignition/validator-message/zipball/16896f1f1b055256d23423b8f4f8c1ff3dda4822",
+                "reference": "16896f1f1b055256d23423b8f4f8c1ff3dda4822",
                 "shasum": ""
             },
             "require": {
@@ -46,7 +46,7 @@
             ],
             "description": "Generic validation output message",
             "homepage": "https://github.com/webignition/validator-message",
-            "time": "2019-01-29T12:47:50+00:00"
+            "time": "2019-01-29T13:19:14+00:00"
         }
     ],
     "packages-dev": [
